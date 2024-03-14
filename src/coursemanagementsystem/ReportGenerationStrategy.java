@@ -9,5 +9,5 @@ package coursemanagementsystem;
  * @author Mateus
  */
 public interface ReportGenerationStrategy {
-    
+    public void generateReport();
 }

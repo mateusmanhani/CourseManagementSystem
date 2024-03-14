@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
+
 package coursemanagementsystem;
 
 /**
  *
- * @author Mateus
+ * @author Mateus Manhani
  */
 public interface UserManagementStrategy {
     
+    public void addUser(User user);
+    
+    public void modifyUser(User user);
+    
+    public void deleteUser(User user);
 }
