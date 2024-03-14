@@ -5,6 +5,6 @@ package coursemanagementsystem;
  *
  * @author Mateus Manhani
  */
-public class Admin {
+public class OfficeReportStrategy {
     
 }
