@@ -22,7 +22,11 @@ public class ReportGenerator {
     //Generate Course Report
     public String generateCourseReport(String courseId) {
     StringBuilder report = new StringBuilder();
-    String query = "SELECT m.module_name, c.course_name, m.num_students, l.lecturer_name, m.room FROM modules m JOIN courses c ON m.course_id = c.course_id JOIN lecturers l ON m.lecturer_id = l.lecturer_id WHERE c.course_id = ?;";
+    String query = "SELECT m.module_name, c.course_name, m.num_students, l.lecturer_name, m.room " +
+                   "FROM modules m " +
+                   "JOIN courses c ON m.course_id = c.course_id " +
+                   "JOIN lecturers l ON m.lecturer_id = l.lecturer_id " +
+                   "WHERE c.course_id = ?;"; // Use a placeholder for the course_id
 
     try (Connection conn = databaseIO.getConnection();
          PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -35,7 +39,7 @@ public class ReportGenerator {
                 String courseName = rs.getString("course_name");
                 int numStudents = rs.getInt("num_students");
                 String lecturerName = rs.getString("lecturer_name");
-                String room = rs.getString("room").isEmpty() ? "Online" : rs.getString("room");
+                String room = rs.getString("room").isEmpty() ? "Online" : rs.getString("room"); //if there is no room assigned to amodule replace with online
 
                 report.append(String.format("Module: %s, Course: %s, Students: %d, Lecturer: %s, Room: %s%n", moduleName, courseName, numStudents, lecturerName, room));
             }
@@ -50,9 +54,13 @@ public class ReportGenerator {
     // Generate Student Report
     public void generateStudentReport (String studentID){
         if (user.getRole() != Role.OFFICE){
-            System.out.println("Unauthorized access for course report by role: " + user.getRole());
-            
+            System.out.println("Unauthorized access for course report by role: " + user.getRole()); 
         }
+        
+        StringBuilder report = new StringBuilder();
+        String query = "";
+        
+        
     }
     
     
