@@ -17,11 +17,19 @@ public class ReportGenerator {
     public void generateCourseReport(String CourseID){
         if (user.getRole() != Role.OFFICE){
             System.out.println("Unauthorized access for course report by role: " + user.getRole());
-            return;
         }
         
         
     }
+    
+    // Generate Student Report
+    public void generateStudentReport (String studentID){
+        if (user.getRole() != Role.OFFICE){
+            System.out.println("Unauthorized access for course report by role: " + user.getRole());
+            
+        }
+    }
+    
     
     // Generate Lecturer Report
     public void generateLecturerReport(String lecturerId){
