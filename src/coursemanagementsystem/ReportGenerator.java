@@ -1,17 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
 package coursemanagementsystem;
 
 /**
  *
- * @author Mateus
+ * @author Mateus Manhani
  */
-public interface ReportGenerator {
-    void generateCourseReport();
-    void generateStudentReport();
-    void generateLecturerReport();
+public class ReportGenerator {
+    private User user;
+    private DatabaseIO databaseIO;
+    
+    public ReportGenerator(User user, DatabaseIO databaseIO){
+        this.user = user;
+        this.databaseIO = databaseIO;
+    }
+    
+    //Generate Course Report
+    public void generateCourseReport(){
+        if (user.getRole() != Role.OFFICE){
+            System.out.println("Unauthorized access for course report by role: " + user.getRole());
+            return;
+        }
+        
+        
+    }
+    
+    // Generate Lecturer Report
+    public void generateLecturerReport(){
+        if (user.getRole() != Role.OFFICE){
+            System.out.println("Unauthorized access for lecturer report by role: " + user.getRole());
+            return;
+        }
+        
+        
+    }
 }
-
-

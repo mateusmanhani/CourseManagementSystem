@@ -54,18 +54,6 @@ public class User {
             this.password = newPassword;
     }
     
-    public void generateCourseReport() {
-        reportGenerator.generateCourseReport();
-    }
-
-    public void generateStudentReport() {
-        reportGenerator.generateStudentReport();
-    }
-
-    public void generateLecturerReport() {
-        reportGenerator.generateLecturerReport();
-    }
-    
     // Hash the password...
 
 }
