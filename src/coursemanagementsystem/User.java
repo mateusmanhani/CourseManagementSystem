@@ -8,6 +8,7 @@ package coursemanagementsystem;
 public class User {
     private String username;
     private String password;
+    private String userID;
     private Role role;
     private ReportGenerator reportGenerator; // Use the interface
 
@@ -31,6 +32,12 @@ public class User {
         return role;
     }
 
+    public String getUserID() {
+        return userID;
+    }
+    
+    
+
     // setters
     public void setUsername(String username) {
         this.username = username;
@@ -42,16 +49,6 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-    
-    //update Username
-    public void updateUsername (String newUsername){
-        this.username = newUsername;
-    }
-    
-    // update password
-    public void updatePassword (String newPassword){
-            this.password = newPassword;
     }
     
     // Hash the password...
