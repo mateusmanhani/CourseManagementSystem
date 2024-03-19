@@ -9,15 +9,13 @@ public class User {
     private String username;
     private String password;
     private Role role;
-    
-    // STRATEGY iNTERFACES
-    private ReportGenerationStrategy reportStrategy;
-    private UserManagementStrategy userManagementStrategy;
+    private ReportGenerator reportGenerator; // Use the interface
 
-    public User(String username, String password, Role role) {
+    public User(String username, String password, Role role, ReportGenerator reportGenerator) {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.reportGenerator = reportGenerator;
     }
     
     // Getters
@@ -33,14 +31,6 @@ public class User {
         return role;
     }
 
-    public ReportGenerationStrategy getReportStrategy() {
-        return reportStrategy;
-    }
-
-    public UserManagementStrategy getUserManagementStrategy() {
-        return userManagementStrategy;
-    }
-
     // setters
     public void setUsername(String username) {
         this.username = username;
@@ -53,14 +43,6 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
-
-    public void setReportStrategy(ReportGenerationStrategy reportStrategy) {
-        this.reportStrategy = reportStrategy;
-    }
-
-    public void setUserManagementStrategy(UserManagementStrategy userManagementStrategy) {
-        this.userManagementStrategy = userManagementStrategy;
-    }
     
     //update Username
     public void updateUsername (String newUsername){
@@ -70,6 +52,18 @@ public class User {
     // update password
     public void updatePassword (String newPassword){
             this.password = newPassword;
+    }
+    
+    public void generateCourseReport() {
+        reportGenerator.generateCourseReport();
+    }
+
+    public void generateStudentReport() {
+        reportGenerator.generateStudentReport();
+    }
+
+    public void generateLecturerReport() {
+        reportGenerator.generateLecturerReport();
     }
     
     // Hash the password...

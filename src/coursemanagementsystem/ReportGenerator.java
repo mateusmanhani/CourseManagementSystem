@@ -8,8 +8,10 @@ package coursemanagementsystem;
  *
  * @author Mateus
  */
-public interface ReportGenerationStrategy {
-    public void generateReport(ReportType reportType);
+public interface ReportGenerator {
+    void generateCourseReport();
+    void generateStudentReport();
+    void generateLecturerReport();
 }
 
 
