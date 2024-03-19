@@ -1,13 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
- */
+
 package coursemanagementsystem;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  *
- * @author Mateus
+ * @author Mateus Manhani
  */
 public interface DatabaseIO {
-    
+    Connection getConnection() throws SQLException;
+    public void closeConnection(Connection conn) throws SQLException;
 }
