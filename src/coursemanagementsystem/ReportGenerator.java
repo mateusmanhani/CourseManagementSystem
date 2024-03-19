@@ -1,5 +1,7 @@
 package coursemanagementsystem;
 
+import coursemanagementsystem.users.User;
+
 /**
  *
  * @author Mateus Manhani
