@@ -20,22 +20,25 @@ public class ReportGenerator {
     }
     
     //Generate Course Report
-    public String generateCourseReport() {
+    public String generateCourseReport(String courseId) {
     StringBuilder report = new StringBuilder();
-    String query = "SELECT m.module_name, c.course_name, m.num_students, l.lecturer_name, m.room FROM modules m JOIN courses c ON m.course_id = c.course_id JOIN lecturers l ON m.lecturer_id = l.lecturer_id;";
+    String query = "SELECT m.module_name, c.course_name, m.num_students, l.lecturer_name, m.room FROM modules m JOIN courses c ON m.course_id = c.course_id JOIN lecturers l ON m.lecturer_id = l.lecturer_id WHERE c.course_id = ?;";
 
-    try (Connection conn = databaseIO.getConnection(); 
-         PreparedStatement stmt = conn.prepareStatement(query); 
-         ResultSet rs = stmt.executeQuery()) {
+    try (Connection conn = databaseIO.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        
+        stmt.setString(1, courseId); // Set the courseId in the query
 
-        while (rs.next()) {
-            String moduleName = rs.getString("module_name");
-            String courseName = rs.getString("course_name");
-            int numStudents = rs.getInt("num_students");
-            String lecturerName = rs.getString("lecturer_name");
-            String room = rs.getString("room").isEmpty() ? "Online" : rs.getString("room");
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String moduleName = rs.getString("module_name");
+                String courseName = rs.getString("course_name");
+                int numStudents = rs.getInt("num_students");
+                String lecturerName = rs.getString("lecturer_name");
+                String room = rs.getString("room").isEmpty() ? "Online" : rs.getString("room");
 
-            report.append(String.format("Module: %s, Course: %s, Students: %d, Lecturer: %s, Room: %s%n", moduleName, courseName, numStudents, lecturerName, room));
+                report.append(String.format("Module: %s, Course: %s, Students: %d, Lecturer: %s, Room: %s%n", moduleName, courseName, numStudents, lecturerName, room));
+            }
         }
     } catch (SQLException e) {
         e.printStackTrace();
