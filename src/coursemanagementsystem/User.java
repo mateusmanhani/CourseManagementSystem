@@ -19,7 +19,8 @@ public class User {
         this.password = password;
         this.role = role;
     }
-
+    
+    // Getters
     public String getUsername() {
         return username;
     }
@@ -40,6 +41,7 @@ public class User {
         return userManagementStrategy;
     }
 
+    // setters
     public void setUsername(String username) {
         this.username = username;
     }
@@ -60,5 +62,16 @@ public class User {
         this.userManagementStrategy = userManagementStrategy;
     }
     
+    //update Username
+    public void updateUsername (String newUsername){
+        this.username = newUsername;
+    }
     
+    // update password
+    public void updatePassword (String newPassword){
+            this.password = newPassword;
+    }
+    
+    // Hash the password...
+
 }
