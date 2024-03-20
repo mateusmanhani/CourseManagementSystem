@@ -13,9 +13,15 @@ import java.sql.SQLException;
  * @author Mateus
  */
 public class MySQLDatabaseIO implements DatabaseIO {
-    private String url = "jdbc:mysql://localhost";
-    private String username = "pooa2024";
-    private String password = "pooa2024";
+    private String url;
+    private String username;
+    private String password;
+    
+    
+    // Default constructor uses predefined connection details
+    public MySQLDatabaseIO() {
+        this("jdbc:mysql://localhost/cms", "pooa2024", "pooa2024");
+    }
     
     public MySQLDatabaseIO(String url, String username, String password) {
         this.url = url;
