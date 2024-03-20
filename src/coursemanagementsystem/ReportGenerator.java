@@ -209,7 +209,7 @@ public class ReportGenerator {
             try {
                 conn = databaseIO.getConnection();
 
-                // Your query to fetch lecturer information remains the same
+                // query to fetch lecturer information remains the same
                 String query = "SELECT l.lecturer_name, l.role, m.module_name, m.num_students "
                         + "FROM lecturers l "
                         + "JOIN modules m ON l.lecturer_id = m.lecturer_id "
@@ -256,5 +256,16 @@ public class ReportGenerator {
 
         return report.toString();
     }
+    
+    // Output Student Report
+    public void outputLecturerReport(String lecturerId, OutputType outputType) {
+        String reportContent = generateLecturerReport(lecturerId);
+        if (reportOutputter == null) {
+            System.out.println("ReportOutputter is not initialized.");
+        } else {
+            reportOutputter.outputReport(reportContent, outputType);
+        }
+    }
+
 
 }
