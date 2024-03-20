@@ -10,11 +10,23 @@ public class User {
     private String password;
     private String userID;
     private Role role;
-
+    private String lecturerId;
+    
     public User(String username, String password, Role role) {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+    
+    public User(String username, String password, Role role, String lecturerId) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.lecturerId = lecturerId;
+    }
+
+    public String getLecturerId() {
+        return lecturerId;
     }
 
     // Getters
