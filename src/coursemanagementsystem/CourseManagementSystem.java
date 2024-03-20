@@ -15,6 +15,8 @@ public class CourseManagementSystem {
         ReportGenerator rg = new ReportGenerator(user,dbIO);
         
         rg.outputCourseReport("64c125f1", OutputType.CONSOLE);
+        
+        rg.generateStudentReport("s1");
     }
     
 }

@@ -188,7 +188,16 @@ public class ReportGenerator {
 
         return report.toString();
     }
-
+    
+    // Output Student Report
+    public void outputStudentReport(String studentId, OutputType outputType) {
+        String reportContent = generateStudentReport(studentId);
+        if (reportOutputter == null) {
+            System.out.println("ReportOutputter is not initialized.");
+        } else {
+            reportOutputter.outputReport(reportContent, outputType);
+        }
+    }
 
     // Generate Lecturer Report
     public void generateLecturerReport(String lecturerId) {
