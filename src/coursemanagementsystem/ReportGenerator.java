@@ -200,60 +200,44 @@ public class ReportGenerator {
     }
 
     // Generate Lecturer Report
-    public String generateLecturerReport(String lecturerId) {
-        
+    public String generateLecturerReport(String requestedLecturerId) {
         StringBuilder report = new StringBuilder();
-                
-        // Office can generate any report
-        if (user.getRole() == Role.OFFICE) {
-            System.out.println("Generating lecturer report for: " + lecturerId);
-            // Implementation to generate and display/return the lecturer report
-        } // Lecturers can only generate reports for themselves
-        else if (user.getRole() == Role.LECTURER && user.getUserID().equals(lecturerId)) {
-            System.out.println("Generating lecturer report for self: " + lecturerId);
-            
-            // Implementation to generate and display/return the lecturer report for themselves
+
+        // Check if the user is an office user or a lecturer trying to access their own report
+        if (user.getRole() == Role.OFFICE || (user.getRole() == Role.LECTURER && user.getLecturerId().equals(requestedLecturerId))) {
             Connection conn = null;
             try {
                 conn = databaseIO.getConnection();
 
-                // Fetch lecturer information
-                String lecturerQuery = "SELECT l.lecturer_name, l.role "
+                // Your query to fetch lecturer information remains the same
+                String query = "SELECT l.lecturer_name, l.role, m.module_name, m.num_students "
                         + "FROM lecturers l "
+                        + "JOIN modules m ON l.lecturer_id = m.lecturer_id "
                         + "WHERE l.lecturer_id = ?;";
 
-                // Fetch modules taught by the lecturer
-                String modulesQuery = "SELECT m.module_name, m.num_students "
-                        + "FROM modules m "
-                        + "WHERE m.lecturer_id = ?;";
-
-                try ( PreparedStatement lecturerStmt = conn.prepareStatement(lecturerQuery)) {
-                    lecturerStmt.setString(1, lecturerId);
-                    try ( ResultSet lecturerRs = lecturerStmt.executeQuery()) {
-                        if (lecturerRs.next()) {
-                            String lecturerName = lecturerRs.getString("lecturer_name");
-                            String lecturerRole = lecturerRs.getString("role");
-                            report.append(String.format("Lecturer Report for: %s (%s)%nRole: %s%n%n",
-                                    lecturerName, lecturerId, lecturerRole));
-                        } else {
-                            return "Lecturer not found.";
-                        }
-                    }
-                }
-
-                // Append the modules and the number of students
-                report.append("Modules Teaching This Semester:\n");
-                try ( PreparedStatement modulesStmt = conn.prepareStatement(modulesQuery)) {
-                    modulesStmt.setString(1, lecturerId);
-                    try ( ResultSet modulesRs = modulesStmt.executeQuery()) {
-                        while (modulesRs.next()) {
-                            String moduleName = modulesRs.getString("module_name");
-                            int numStudents = modulesRs.getInt("num_students");
+                // Execute query and build the report
+                try ( PreparedStatement stmt = conn.prepareStatement(query)) {
+                    stmt.setString(1, requestedLecturerId);
+                    try ( ResultSet rs = stmt.executeQuery()) {
+                        boolean found = false;
+                        while (rs.next()) {
+                            if (!found) { // Header information about the lecturer, printed once
+                                String lecturerName = rs.getString("lecturer_name");
+                                String lecturerRole = rs.getString("role");
+                                report.append(String.format("Lecturer Report for: %s (%s)%nRole: %s%n%n",
+                                        lecturerName, requestedLecturerId, lecturerRole));
+                                report.append("Modules Teaching This Semester:\n");
+                                found = true;
+                            }
+                            String moduleName = rs.getString("module_name");
+                            int numStudents = rs.getInt("num_students");
                             report.append(String.format("    Module: %s, Students: %d%n", moduleName, numStudents));
                         }
+                        if (!found) { // If no records were found
+                            return "Lecturer not found or has no modules assigned.";
+                        }
                     }
                 }
-
             } catch (SQLException e) {
                 e.printStackTrace();
                 return "An error occurred while generating the lecturer report.";
@@ -267,12 +251,10 @@ public class ReportGenerator {
                 }
             }
         } else {
-            return "Unauthorized access attempt for lecturer report by: " + user.getUserID();
+            return "Unauthorized access attempt for lecturer report.";
         }
 
         return report.toString();
-
     }
-    
-    
+
 }
