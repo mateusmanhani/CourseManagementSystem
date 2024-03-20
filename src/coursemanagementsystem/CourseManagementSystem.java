@@ -16,7 +16,7 @@ public class CourseManagementSystem {
         
         rg.outputCourseReport("64c125f1", OutputType.CONSOLE);
         
-        rg.generateStudentReport("s1");
+        rg.outputStudentReport("s2",OutputType.CONSOLE);
     }
     
 }
