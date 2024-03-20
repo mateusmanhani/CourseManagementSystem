@@ -14,6 +14,8 @@ public class CourseManagementSystem {
         User user = new User("admin","java", Role.OFFICE);
         ReportGenerator rg = new ReportGenerator(user,dbIO);
         
+        
+        
         rg.outputCourseReport("64c125f1", OutputType.CONSOLE);
         
         rg.outputStudentReport("s2",OutputType.CONSOLE);
