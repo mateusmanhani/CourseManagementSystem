@@ -114,7 +114,7 @@ public class UserService {
             stmt.setString(1, newUsername);
             stmt.setString(2, userId);
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            return rowsAffected > 0; //If any rows are affected return true
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -122,21 +122,34 @@ public class UserService {
     }
     
     public boolean changeMyPassword(String userId, String newPassword, String salt) {
-        String query = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
+    // Hash the new password before updating the database
+    String hashedPassword = IterativeHasher.hashPassword(newPassword, salt, 1000); // Example: Using IterativeHasher to hash the password
+    
+    String query = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
+    try (Connection conn = databaseIO.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setString(1, hashedPassword);
+        stmt.setString(2, salt);
+        stmt.setString(3, userId);
+        int rowsAffected = stmt.executeUpdate();
+        return rowsAffected > 0; //If any rows are affected return true
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+    
+    public boolean changeMyRole(String userId, Role newRole) {
+        String query = "UPDATE users SET role = ? WHERE user_id = ?";
         try (Connection conn = databaseIO.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, newPassword);
-            stmt.setString(2, salt);
-            stmt.setString(3, userId);
+            stmt.setString(1, newRole.name());
+            stmt.setString(2, userId);
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            return rowsAffected > 0; //If any rows are affected return true
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-    }
-    
-    public boolean changeMyRole(){
-        
     }
 }
