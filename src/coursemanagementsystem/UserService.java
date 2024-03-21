@@ -107,11 +107,25 @@ public class UserService {
     }
 }
     
-//    public boolean changeMyUsername (String username){
-//       String query 
-//    }
-//    
-//    public boolean changeMyPassword (String password){
-//        
-//    }
+    public boolean changeMyUsername(String userId, String newUsername) {
+        String query = "UPDATE users SET username = ? WHERE user_id = ?";
+        try (Connection conn = databaseIO.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, newUsername);
+            stmt.setString(2, userId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean changeMyPassword (String password){
+        
+    }
+    
+    public boolean changeMyRole(){
+        
+    }
 }
