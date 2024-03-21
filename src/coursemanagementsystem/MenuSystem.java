@@ -76,6 +76,110 @@ public class MenuSystem {
                 System.out.println("5. Change my password");
                 System.out.println("6. Change my role");
                 System.out.println("7. Logout");
+                System.out.println("Enter the number of your choice: ");
+                
+                int choice = sc.nextInt();
+                
+                switch(choice){
+                    case 1:
+                        //AddUser
+                    case 2:
+                        //updateUser
+                        System.out.println("Enter the user ID of the user you wish to add: ");
+                        String userId = sc.next();
+                        
+                        if(userId != null){
+                            boolean updatedUser = userService.updateUser();
+                            if(updatedUser){
+                                System.out.println("User updated successfully.");
+                            }else{
+                                System.out.println("Error updating user.Please try again.");
+                            }
+                        }
+                        break;
+                    case 3:
+                        //deleteUser
+                        System.out.println("Enter the user ID of the user you wish to delete: ");
+                        String userId = sc.next();
+                        
+                        if(userId != null){
+                            boolean deletedUser = userService.deleteUser(userId);
+                            if(deletedUser){
+                                System.out.println("User deleteded successfully.");
+                            }else{
+                                System.out.println("Error deleting user.Please try again.");
+                            }
+                        }
+                        break;
+                    case 4:
+                        // changeMyUsername
+                        System.out.println("Enter your new username: ");
+                        String newUsername = sc.next();
+                        
+                        //call changeMyUsername method passing the new username
+                        boolean usernameChanged = userService.changeMyUsername(user.getUserID(), newUsername);
+                        if(usernameChanged){
+                            System.out.println("Username Changed successfully.");
+                        }else{
+                            System.out.println("Failed to change username. please try again.");
+                        }
+                        break;
+                    case 5:
+                        // changeMyPassword
+                        System.out.println("Enter your new password");
+                        String newPassword = sc.next();
+                        // Hash the password
+                        String salt = Hasher.generateSalt();
+                        String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000);
+                        // Call the changeMyPassword method passing the hashedPassword and salt
+                        boolean passwordChanged = userService.changeMyPassword(user.getUserID(),hashedPassword,salt);
+                        if(passwordChanged){
+                            System.out.println("Password changed successfully.");
+                        }else{
+                            System.out.println("Error updating password. Please try again.");
+                        }
+                        break;
+                    case 6:
+                        // changeMyRole
+                        System.out.println("Select the role you want to change to:");
+                        System.out.println("1. Office");
+                        System.out.println("2. Lecturer");
+                        System.out.println("3. Admin");
+                        int roleChoice = sc.nextInt();
+                        Role newRole = null;
+                        switch(roleChoice){
+                            case 1:
+                                newRole = Role.OFFICE;
+                                break;
+                            case 2:
+                                newRole = Role.LECTURER;
+                                break;
+                            case 3:
+                                newRole = Role.ADMIN;
+                                break;
+                            default:
+                                System.out.println("Invalid role choice.");
+                                break;
+                        }
+                        if(newRole != null){
+                            boolean roleChanged = userService.changeMyRole(user.getUserID(), newRole);
+                            if (roleChanged){
+                                System.out.println("Role changed successfully.");
+                            }else{
+                                System.out.println("Failed to change role. Please try again.");
+                            }
+                        }
+                        break;
+                    case 7:
+                        validInput = true;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
+                    
+                }
+                
+                
                 
             }catch(Exception e){
                 
