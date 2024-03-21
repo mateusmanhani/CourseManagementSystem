@@ -2,6 +2,7 @@ package coursemanagementsystem;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -71,11 +72,46 @@ public class UserService {
         }
     }
     
-    public boolean changeMyUsername (String username){
-       String query 
+    public void updateAllUserPasswords() {
+    String selectQuery = "SELECT user_id FROM users";
+    String updateQuery = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
+
+    try (Connection conn = databaseIO.getConnection();
+         PreparedStatement selectStmt = conn.prepareStatement(selectQuery);
+         ResultSet rs = selectStmt.executeQuery()) {
+
+        if (!rs.isBeforeFirst() ) {    
+            System.out.println("No users found to update."); 
+            return;
+        }
+
+        while (rs.next()) {
+            String userId = rs.getString("user_id");
+
+            String salt = IterativeHasher.generateSalt();
+            String hashedPassword = IterativeHasher.hashPassword("defaultPassword", salt, 1000); // Example use
+
+            try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+                updateStmt.setString(1, hashedPassword);
+                updateStmt.setString(2, salt);
+                updateStmt.setString(3, userId);
+
+                int updatedRows = updateStmt.executeUpdate();
+                System.out.println("Updated " + updatedRows + " rows for user ID: " + userId);
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("SQL Exception: " + e.getMessage());
     }
+}
     
-    public boolean changeMyPassword (String password){
-        
-    }
+//    public boolean changeMyUsername (String username){
+//       String query 
+//    }
+//    
+//    public boolean changeMyPassword (String password){
+//        
+//    }
 }

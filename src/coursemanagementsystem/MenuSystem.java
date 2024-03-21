@@ -64,7 +64,7 @@ public class MenuSystem {
     }
     
     public void adminMenu(User user, Scanner sc){
-        UserService userService = new UserService(databaseIO);
+//        UserService userService = new UserService(databaseIO);
         boolean validInput = false;
         while (!validInput){
             try{

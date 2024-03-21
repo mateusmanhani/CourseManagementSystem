@@ -3,6 +3,7 @@ package coursemanagementsystem;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Base64;
 
 /**
@@ -24,5 +25,12 @@ public class IterativeHasher {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    public static String generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] saltBytes = new byte[16];
+        random.nextBytes(saltBytes);
+        return Base64.getEncoder().encodeToString(saltBytes);
     }
 }
