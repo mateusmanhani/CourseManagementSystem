@@ -98,13 +98,22 @@ public class MenuSystem {
                 switch(choice){
                     case 1:
                         // generate self report
-                        System.out.println("Please selct an output type.");
-                        System.out.println("1. Generate my report.");
-                        System.out.println("2. Change my username.");
-                        System.out.println("3. Change my password.");
-                        reportGenerator.outputLecturerReport(user.getLecturerId(),);
+                        System.out.println("Please select an output type:");
+                        System.out.println("1. CSV");
+                        System.out.println("2. TEXT");
+                        System.out.println("3. CONSOLE.");
+                        System.out.println("Enter the number of your choice: ");
+                        int outputChoice = sc.nextInt();
+                        OutputType outputType = getOutputTypeFromChoice(outputChoice);
+                        if (outputType != null){
+                            reportGenerator.outputLecturerReport(user.getLecturerId(),outputType);
+                        }else{
+                            System.out.println("Invalid output option, please try again.");
+                        }
+                        break;
                     case 2:
                         //change my username
+                        
                     case 3:
                         //change my password
                     case 4:
@@ -114,7 +123,8 @@ public class MenuSystem {
                         System.out.println("Invalid option please try again.");
                 }
             }catch(Exception e){
-                
+                sc.nextLine(); // Clear scanner buffer
+                System.out.println("An error occured please try again.");
             }
         }
 

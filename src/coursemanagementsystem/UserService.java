@@ -70,5 +70,12 @@ public class UserService {
             return false;
         }
     }
-
+    
+    public boolean changeMyUsername (String username){
+       String query 
+    }
+    
+    public boolean changeMyPassword (String password){
+        
+    }
 }
