@@ -121,8 +121,19 @@ public class UserService {
         }
     }
     
-    public boolean changeMyPassword (String password){
-        
+    public boolean changeMyPassword(String userId, String newPassword, String salt) {
+        String query = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
+        try (Connection conn = databaseIO.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, newPassword);
+            stmt.setString(2, salt);
+            stmt.setString(3, userId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
     public boolean changeMyRole(){
