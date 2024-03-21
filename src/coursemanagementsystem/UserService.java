@@ -50,6 +50,25 @@ public class UserService {
             return false;
         }
     }
-    
-    
+
+    public boolean updateUser(User user) {
+        String query = "UPDATE users SET username = ?, password = ?, role = ?, lecture_id = ? WHERE user_id = ?;";
+        try ( Connection conn = databaseIO.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getPassword());
+            stmt.setString(3, user.getRole().name());
+            stmt.setString(4, user.getRole() == Role.LECTURER ? user.getLecturerId() : null); // if user role is LECTURER also insert lecturerId else insert null
+            stmt.setString(5, user.getUserID());
+            
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0; //return true if any rows are affected
+            
+        }catch (SQLException e) {
+            System.out.println("Error adding user.");
+            e.getSQLState();
+            return false;
+        }
+    }
+
 }
