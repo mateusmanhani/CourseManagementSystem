@@ -90,7 +90,8 @@ public class MenuSystem {
                 System.out.println("1. Generate my report.");
                 System.out.println("2. Change my username.");
                 System.out.println("3. Change my password.");
-                System.out.println("4. Logout.");
+                System.out.println("4. Change my role.");
+                System.out.println("5. Logout.");
                 System.out.println("Enter the number of your choice: ");
                 
                 int choice = sc.nextInt();
@@ -116,7 +117,11 @@ public class MenuSystem {
                         
                     case 3:
                         //change my password
+                    
                     case 4:
+                        //change role
+                    
+                    case 5:
                         validInput = true;
                         break;
                     default:

@@ -17,16 +17,20 @@ public class UserService {
         this.databaseIO = databaseIO;
     }
 
-    public boolean addUSer(User user) {
-        String query = " INSERT INTO users (user_id, username, password, role, lecturer_id) VALUES ( ?, ?, ?, ?);";
+    public boolean addUSer(User user, String salt) {
+        // Hash the password before storing it in the database
+        String hashedPassword = IterativeHasher.hashPassword(user.getPassword(), salt, 1000);
+        
+        String query = "INSERT INTO users (user_id, username, password, role, lecturer_id, salt) VALUES (?, ?, ?, ?, ?, ?)";
         try ( Connection conn = databaseIO.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, user.getUserID());
             stmt.setString(2, user.getUsername());
-            stmt.setString(3, user.getPassword());
+            stmt.setString(3, hashedPassword);
             stmt.setString(4, user.getRole().name());
             stmt.setString(5, user.getRole() == Role.LECTURER ? user.getLecturerId() : null); // if user role is LECTURER also insert lecturerId else insert null
-
+            stmt.setString(6, salt);
+            
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0; // If any rows were actually updated it ill return true;
 
@@ -52,15 +56,19 @@ public class UserService {
         }
     }
 
-    public boolean updateUser(User user) {
-        String query = "UPDATE users SET username = ?, password = ?, role = ?, lecture_id = ? WHERE user_id = ?;";
+    public boolean updateUser(User user, String salt) {
+        // Hash the new password before updating the database
+        String hashedPassword = IterativeHasher.hashPassword(user.getPassword(), salt, 1000);
+    
+        String query = "UPDATE users SET username = ?, password = ?, role = ?, lecturer_id = ?, salt = ? WHERE user_id = ?";
         try ( Connection conn = databaseIO.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
             
             stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
+            stmt.setString(2, hashedPassword);
             stmt.setString(3, user.getRole().name());
             stmt.setString(4, user.getRole() == Role.LECTURER ? user.getLecturerId() : null); // if user role is LECTURER also insert lecturerId else insert null
-            stmt.setString(5, user.getUserID());
+            stmt.setString(5, salt);
+            stmt.setString(6, user.getUserID());
             
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0; //return true if any rows are affected
