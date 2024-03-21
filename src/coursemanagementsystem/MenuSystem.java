@@ -11,9 +11,13 @@ import java.util.logging.Logger;
  */
 public class MenuSystem {
     private AuthService authService;
-    
-    public MenuSystem(DatabaseIO databaseIO){
-        this.authService = new AuthService(databaseIO);
+    private UserService userService;
+    private ReportGenerator reportGenerator;
+
+    public MenuSystem(AuthService authService, UserService userService, ReportGenerator reportGenerator) {
+        this.authService = authService;
+        this.userService = userService;
+        this.reportGenerator = reportGenerator;
     }
     
     public void showLoginScreen(){
@@ -59,38 +63,76 @@ public class MenuSystem {
         
     }
     
-    public void adminMenu(){
-        //addUser
-        
-        //updateUser
-            //role
-            //username
-            //password
-        
-        //deleteUser
-        
-        // change my username
-        
-        //change my password
+    public void adminMenu(User user, Scanner sc){
+        UserService userService = new UserService(databaseIO);
+        boolean validInput = false;
+        while (!validInput){
+            try{
+                System.out.println("Welcome to the ADMIN menu.");
+                System.out.println("1. Add User.");
+                System.out.println("2. Update User.");
+                System.out.println("3. Delete User.");
+                System.out.println("4. Change my username");
+                System.out.println("5. Change my password");
+                
+            }catch(Exception e){
+                
+            }
+        }
     }
     
-    public void lecturerMenu(){
-        //generate my report
-        
-        // change my password
-        
-        //change my username
+    public void lecturerMenu(User user, Scanner sc){
+        boolean validInput = false;
+        while (!validInput){
+            try{
+                System.out.println("Welcome to the ADMIN menu.");
+                
+                System.out.println("1. Generate my report.");
+                System.out.println("2. Change my username.");
+                System.out.println("3. Change my password.");
+                System.out.println("4. Logout.");
+                System.out.println("Enter the number of your choice: ");
+                
+                int choice = sc.nextInt();
+                
+                switch(choice){
+                    case 1:
+                        // generate self report
+                        System.out.println("Please selct an output type.");
+                        System.out.println("1. Generate my report.");
+                        System.out.println("2. Change my username.");
+                        System.out.println("3. Change my password.");
+                        reportGenerator.outputLecturerReport(user.getLecturerId(),);
+                    case 2:
+                        //change my username
+                    case 3:
+                        //change my password
+                    case 4:
+                        validInput = true;
+                        break;
+                    default:
+                        System.out.println("Invalid option please try again.");
+                }
+            }catch(Exception e){
+                
+            }
+        }
+
     }
     
-    public void officeMenu(){
-        //generate student report
-        
-        //generate lecturer report
-        
-        //generate course report
-        
-        //change my password
-        
-        //change my username
+    public void officeMenu(User user, Scanner sc){
+        boolean validInput = false;
+        while (!validInput){
+            try{
+                System.out.println("Welcome to the OFFICE menu.");
+                System.out.println("1. Generate student report.");
+                System.out.println("2. Generate lecturer report");
+                System.out.println("3. Generate course report");
+                System.out.println("4. Change my username");
+                System.out.println("5. Change my password");
+            }catch(Exception e){
+                
+            }
+        }
     }
 }
