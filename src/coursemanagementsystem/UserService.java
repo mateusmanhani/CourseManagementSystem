@@ -19,7 +19,7 @@ public class UserService {
 
     public boolean addUSer(User user, String salt) {
         // Hash the password before storing it in the database
-        String hashedPassword = IterativeHasher.hashPassword(user.getPassword(), salt, 1000);
+        String hashedPassword = Hasher.hashPassword(user.getPassword(), salt, 1000);
         
         String query = "INSERT INTO users (user_id, username, password, role, lecturer_id, salt) VALUES (?, ?, ?, ?, ?, ?)";
         try ( Connection conn = databaseIO.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -58,7 +58,7 @@ public class UserService {
 
     public boolean updateUser(User user, String salt) {
         // Hash the new password before updating the database
-        String hashedPassword = IterativeHasher.hashPassword(user.getPassword(), salt, 1000);
+        String hashedPassword = Hasher.hashPassword(user.getPassword(), salt, 1000);
     
         String query = "UPDATE users SET username = ?, password = ?, role = ?, lecturer_id = ?, salt = ? WHERE user_id = ?";
         try ( Connection conn = databaseIO.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -96,8 +96,8 @@ public class UserService {
         while (rs.next()) {
             String userId = rs.getString("user_id");
 
-            String salt = IterativeHasher.generateSalt();
-            String hashedPassword = IterativeHasher.hashPassword("defaultPassword", salt, 1000); // Example use
+            String salt = Hasher.generateSalt();
+            String hashedPassword = Hasher.hashPassword("defaultPassword", salt, 1000); // Example use
 
             try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
                 updateStmt.setString(1, hashedPassword);
@@ -131,7 +131,7 @@ public class UserService {
     
     public boolean changeMyPassword(String userId, String newPassword, String salt) {
     // Hash the new password before updating the database
-    String hashedPassword = IterativeHasher.hashPassword(newPassword, salt, 1000); // Example: Using IterativeHasher to hash the password
+    String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000); // Example: Using IterativeHasher to hash the password
     
     String query = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
     try (Connection conn = databaseIO.getConnection();

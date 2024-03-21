@@ -33,7 +33,7 @@ public class AuthService {
                     String salt = rs.getString("salt");
 
                     // hash the entered password with the stored salt using the same iterations used for hashing stpred passwords
-                    String hashedEnteredPassword = IterativeHasher.hashPassword(enteredPassword, salt, 1000);
+                    String hashedEnteredPassword = Hasher.hashPassword(enteredPassword, salt, 1000);
 
                     // compare the hashed entered password with the stored hash
                     if (hashedEnteredPassword.equals(storedHash)) {

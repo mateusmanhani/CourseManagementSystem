@@ -74,6 +74,8 @@ public class MenuSystem {
                 System.out.println("3. Delete User.");
                 System.out.println("4. Change my username");
                 System.out.println("5. Change my password");
+                System.out.println("6. Change my role");
+                System.out.println("7. Logout");
                 
             }catch(Exception e){
                 
@@ -90,8 +92,7 @@ public class MenuSystem {
                 System.out.println("1. Generate my report.");
                 System.out.println("2. Change my username.");
                 System.out.println("3. Change my password.");
-                System.out.println("4. Change my role.");
-                System.out.println("5. Logout.");
+                System.out.println("4. Logout.");
                 System.out.println("Enter the number of your choice: ");
                 
                 int choice = sc.nextInt();
@@ -114,14 +115,34 @@ public class MenuSystem {
                         break;
                     case 2:
                         //change my username
+                        System.out.println("Enter your new username: ");
+                        String newUsername = sc.next();
+                        
+                        //call changeMyUsername method passing the new username
+                        boolean usernameChanged = userService.changeMyUsername(user.getUserID(), newUsername);
+                        if(usernameChanged){
+                            System.out.println("Username Changed successfully.");
+                        }else{
+                            System.out.println("Failed to change username. please try again.");
+                        }
+                        break;
                         
                     case 3:
                         //change my password
-                    
+                        System.out.println("Enter your new password");
+                        String newPassword = sc.next();
+                        // Hash the password
+                        String salt = Hasher.generateSalt();
+                        String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000);
+                        // Call the changeMyPassword method passing the hashedPassword and salt
+                        boolean passwordChanged = userService.changeMyPassword(user.getUserID(),hashedPassword,salt);
+                        if(passwordChanged){
+                            System.out.println("Password changed successfully.");
+                        }else{
+                            System.out.println("Error updating password. Please try again.");
+                        }
+                        break;
                     case 4:
-                        //change role
-                    
-                    case 5:
                         validInput = true;
                         break;
                     default:

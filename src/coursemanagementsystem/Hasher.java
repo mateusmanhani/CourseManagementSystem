@@ -10,7 +10,7 @@ import java.util.Base64;
  *
  * @author Mateus Manhani
  */
-public class IterativeHasher {
+public class Hasher {
     
     public static String hashPassword(String password, String salt, int iterations) {
         try {
