@@ -135,4 +135,19 @@ public class MenuSystem {
             }
         }
     }
+    
+    
+    // Method to return enum output type for the output of the reports
+    private OutputType getOutputTypeFromChoice(int choice) {
+    switch (choice) {
+        case 1:
+            return OutputType.CSV_FILE;
+        case 2:
+            return OutputType.TEXT_FILE;
+        case 3:
+            return OutputType.CONSOLE;
+        default:
+            return null; // Invalid choice
+    }
+}
 }
