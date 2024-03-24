@@ -27,9 +27,13 @@ public class MenuSystem {
             try {
                 Scanner sc = new Scanner(System.in);
                 System.out.println("Welcome to the Course Management System (CMS)");
+                System.out.println("If you would like to exit type 'exit'.");
 
                 System.out.println("Username: ");
                 String username = sc.nextLine();
+                
+                if (username.equalsIgnoreCase("exit"))
+                    break;
 
                 System.out.println("Password: ");
                 String password = sc.nextLine();

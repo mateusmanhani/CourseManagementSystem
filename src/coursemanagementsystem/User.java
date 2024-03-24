@@ -12,7 +12,8 @@ public class User {
     private String lecturerId;
     private String salt;
     
-    public User(String username, String password, Role role) {
+    public User(String userID, String username, Role role) {
+        this.userID = userID;
         this.username = username;
         this.role = role;
     }

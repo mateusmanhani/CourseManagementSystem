@@ -10,24 +10,16 @@ public class CourseManagementSystem {
      * 
      */
     public static void main(String[] args) {
-//        DatabaseIO dbIO = new MySQLDatabaseIO();
-//        User user = new User("admin","java", Role.OFFICE);
-//        ReportGenerator rg = new ReportGenerator(user,dbIO);
-//        
-//        
-//        
-//        rg.outputCourseReport("64c125f1", OutputType.CONSOLE);
-//        
-//        rg.outputStudentReport("s2",OutputType.CONSOLE);
 
-        // Initialize DatabaseIO with your actual database connection details
-        DatabaseIO databaseIO = new MySQLDatabaseIO();
-
-//        // Call the method to update all user passwords
+//        // Call the method to update all user passwords to hashed passwords in order to test
 //        userService.updateAllUserPasswords();
 //
 //        System.out.println("All user passwords have been updated.");
     
+
+    
+        // Initialize DatabaseIO with your actual database connection details
+        DatabaseIO databaseIO = new MySQLDatabaseIO();
     
         // Initialise services
         AuthService authService = new AuthService(databaseIO);
@@ -36,10 +28,24 @@ public class CourseManagementSystem {
         // Initialise ReportGenerator
         ReportGenerator reportGenerator = new ReportGenerator(databaseIO);
         
-    
-   
-         // Call menuSytem
         MenuSystem menu = new MenuSystem(authService,userService,reportGenerator);
+            menu.showLoginScreen();
+        
+//        // Instanciate Test admin user/ Please uncomment this section to test
+//        Role role = Role.ADMIN;
+//        String adminUserId = "123";
+//        User adminUser = new User(adminUserId,"admin",role);
+//        
+//        String adminPassword = "java";
+//        String adminSalt = Hasher.generateSalt();
+//        
+//        boolean addedAdmin = userService.addUSer(adminUser, adminPassword, adminSalt);
+//        
+//        if (addedAdmin){
+//            // Call menuSytem
+//            MenuSystem menu = new MenuSystem(authService,userService,reportGenerator);
+//            menu.showLoginScreen();
+//        }
     }
     
 }
