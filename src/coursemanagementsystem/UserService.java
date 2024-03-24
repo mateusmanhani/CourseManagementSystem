@@ -101,38 +101,42 @@ public class UserService {
     }
     
     public void updateAllUserPasswords() {
-    String selectQuery = "SELECT user_id FROM users";
-    String updateQuery = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
+        String selectQuery = "SELECT user_id, password FROM users";
+        String updateQuery = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
 
-    try (Connection conn = databaseIO.getConnection();
-         PreparedStatement selectStmt = conn.prepareStatement(selectQuery);
-         ResultSet rs = selectStmt.executeQuery()) {
+        try (Connection conn = databaseIO.getConnection();
+             PreparedStatement selectStmt = conn.prepareStatement(selectQuery);
+             ResultSet rs = selectStmt.executeQuery()) {
 
-        if (!rs.isBeforeFirst() ) {    
-            System.out.println("No users found to update."); 
-            return;
-        }
-
-        while (rs.next()) {
-            String userId = rs.getString("user_id");
-
-            String salt = Hasher.generateSalt();
-            String hashedPassword = Hasher.hashPassword("defaultPassword", salt, 1000); // Example use
-
-            try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
-                updateStmt.setString(1, hashedPassword);
-                updateStmt.setString(2, salt);
-                updateStmt.setString(3, userId);
-
-                int updatedRows = updateStmt.executeUpdate();
-                System.out.println("Updated " + updatedRows + " rows for user ID: " + userId);
+            if (!rs.isBeforeFirst()) {
+                System.out.println("No users found to update.");
+                return;
             }
-        }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-        System.out.println("SQL Exception: " + e.getMessage());
-    }
+            while (rs.next()) {
+                String userId = rs.getString("user_id");
+                String rawPassword = rs.getString("password");
+
+                // Generate a new salt
+                String salt = Hasher.generateSalt();
+
+                // Hash the raw password with the generated salt
+                String hashedPassword = Hasher.hashPassword(rawPassword, salt, 1000);
+
+                try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+                    updateStmt.setString(1, hashedPassword);
+                    updateStmt.setString(2, salt);
+                    updateStmt.setString(3, userId);
+
+                    int updatedRows = updateStmt.executeUpdate();
+                    System.out.println("Updated " + updatedRows + " rows for user ID: " + userId);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("SQL Exception: " + e.getMessage());
+        }
 }
     
     public boolean changeMyUsername(String userId, String newUsername) {
