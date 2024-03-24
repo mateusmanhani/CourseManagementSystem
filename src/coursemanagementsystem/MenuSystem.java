@@ -84,9 +84,38 @@ public class MenuSystem {
                 switch(choice){
                     case 1:
                         //AddUser
+                        sc.nextLine();
+                        System.out.println("Enter username: ");
+                        String username = sc.nextLine();
+                        
+                        System.out.println("Enter password: ");
+                        String password = sc.nextLine();
+                        
+                        System.out.println("Enter role (ADMIN, OFFICE, LECTURER): ");
+                        String roleStr = sc.nextLine();
+                        Role role = Role.valueOf(roleStr.toUpperCase());
+                        
+                        String lecturerId = null;
+                        if(role == Role.LECTURER){
+                            System.out.println("Enter lecturer ID: ");
+                            lecturerId = sc.nextLine();
+                        }
+                        
+                        String salt = Hasher.generateSalt();
+                        String userId = userService.generateUniqueUserID();
+                        User newUser = new User(userId, username, role, lecturerId, salt); // instanciate new User
+                        boolean userAdded = userService.addUSer(newUser, password, salt);
+                        
+                        if(userAdded){
+                            System.out.println("User added successfully.");
+                        }else{
+                            System.out.println("Failed to add User.");
+                        }
+                        break;
                     case 2:
+                        //update user
                         sc.nextLine(); // Consume newline
-                        System.out.println("Enter the user ID of the user you wish to update:");
+                        System.out.println("Enter the user ID of the user you wish to update: ");
                         String updateUserId = sc.nextLine();
 
                         // Fetch user to ensure they exist 
@@ -96,16 +125,16 @@ public class MenuSystem {
                             break;
                         }
 
-                        System.out.println("Enter new username (press Enter to keep current):");
+                        System.out.println("Enter new username (press Enter to keep current): ");
                         String newUsername = sc.nextLine();
                         if (!newUsername.isEmpty()) userToUpdate.setUsername(newUsername);
 
-                        System.out.println("Enter new role (ADMIN, OFFICE, LECTURER) or press Enter to keep current:");
+                        System.out.println("Enter new role (ADMIN, OFFICE, LECTURER) or press Enter to keep current: ");
                         String newRoleStr = sc.nextLine();
                         if (!newRoleStr.isEmpty()) userToUpdate.setRole(Role.valueOf(newRoleStr.toUpperCase()));
 
                         Optional<String> newPassword = Optional.empty();
-                        System.out.println("Do you want to change the password? (yes/no):");
+                        System.out.println("Do you want to change the password? (yes/no): ");
                         String changePassword = sc.nextLine();
                         if ("yes".equalsIgnoreCase(changePassword)) {
                             System.out.println("Enter new password:");
@@ -122,12 +151,13 @@ public class MenuSystem {
                         break;
                     case 3:
                         //deleteUser
+                        sc.nextLine();
                         System.out.println("Enter the user ID of the user you wish to delete: ");
-                        String userId = sc.next();
+                        String deleteUserId = sc.next();
                         
-                        if(userId != null){
-                            boolean deletedUser = userService.deleteUser(userId);
-                            if(deletedUser){
+                        if(deleteUserId != null){
+                            boolean deleted = userService.deleteUser(deleteUserId);
+                            if(deleted){
                                 System.out.println("User deleteded successfully.");
                             }else{
                                 System.out.println("Error deleting user.Please try again.");
@@ -137,10 +167,10 @@ public class MenuSystem {
                     case 4:
                         // changeMyUsername
                         System.out.println("Enter your new username: ");
-                        String newUsername = sc.next();
+                        String myNewUsername = sc.next();
                         
                         //call changeMyUsername method passing the new username
-                        boolean usernameChanged = userService.changeMyUsername(user.getUserID(), newUsername);
+                        boolean usernameChanged = userService.changeMyUsername(user.getUserID(), myNewUsername);
                         if(usernameChanged){
                             System.out.println("Username Changed successfully.");
                         }else{
@@ -150,12 +180,12 @@ public class MenuSystem {
                     case 5:
                         // changeMyPassword
                         System.out.println("Enter your new password");
-                        String newPassword = sc.next();
+                        String myNewPassword = sc.next();
                         // Hash the password
-                        String salt = Hasher.generateSalt();
-                        String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000);
+                        String mySalt = Hasher.generateSalt();
+                        String hashedPassword = Hasher.hashPassword(myNewPassword, mySalt, 1000);
                         // Call the changeMyPassword method passing the hashedPassword and salt
-                        boolean passwordChanged = userService.changeMyPassword(user.getUserID(),hashedPassword,salt);
+                        boolean passwordChanged = userService.changeMyPassword(user.getUserID(),hashedPassword,mySalt);
                         if(passwordChanged){
                             System.out.println("Password changed successfully.");
                         }else{
