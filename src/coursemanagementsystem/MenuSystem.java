@@ -56,6 +56,7 @@ public class MenuSystem {
         switch(userRole){
             case OFFICE:
                 // SHOW OFFICE MENU
+                
             case LECTURER:
                 //SHOW LECTURER MENU
             case ADMIN:
@@ -82,7 +83,7 @@ public class MenuSystem {
                 int choice = sc.nextInt();
                 
                 switch(choice){
-                    case 1:
+                    case 1:{
                         //AddUser
                         sc.nextLine();
                         System.out.println("Enter username: ");
@@ -112,7 +113,8 @@ public class MenuSystem {
                             System.out.println("Failed to add User.");
                         }
                         break;
-                    case 2:
+                    }
+                    case 2:{
                         //update user
                         sc.nextLine(); // Consume newline
                         System.out.println("Enter the user ID of the user you wish to update: ");
@@ -149,6 +151,7 @@ public class MenuSystem {
                             System.out.println("Failed to update user.");
                         }
                         break;
+                    }
                     case 3:
                         //deleteUser
                         sc.nextLine();
@@ -164,36 +167,41 @@ public class MenuSystem {
                             }
                         }
                         break;
-                    case 4:
+                    case 4:{
                         // changeMyUsername
+                        sc.nextLine();
                         System.out.println("Enter your new username: ");
-                        String myNewUsername = sc.next();
+                        String newUsername = sc.next();
                         
                         //call changeMyUsername method passing the new username
-                        boolean usernameChanged = userService.changeMyUsername(user.getUserID(), myNewUsername);
+                        boolean usernameChanged = userService.changeMyUsername(user.getUserID(), newUsername);
                         if(usernameChanged){
                             System.out.println("Username Changed successfully.");
                         }else{
                             System.out.println("Failed to change username. please try again.");
                         }
                         break;
-                    case 5:
+                    }
+                    case 5:{
                         // changeMyPassword
+                        sc.nextLine();
                         System.out.println("Enter your new password");
-                        String myNewPassword = sc.next();
+                        String newPassword = sc.next();
                         // Hash the password
-                        String mySalt = Hasher.generateSalt();
-                        String hashedPassword = Hasher.hashPassword(myNewPassword, mySalt, 1000);
+                        String salt = Hasher.generateSalt();
+                        String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000);
                         // Call the changeMyPassword method passing the hashedPassword and salt
-                        boolean passwordChanged = userService.changeMyPassword(user.getUserID(),hashedPassword,mySalt);
+                        boolean passwordChanged = userService.changeMyPassword(user.getUserID(),hashedPassword,salt);
                         if(passwordChanged){
                             System.out.println("Password changed successfully.");
                         }else{
                             System.out.println("Error updating password. Please try again.");
                         }
                         break;
+                    }
                     case 6:
                         // changeMyRole
+                        sc.nextLine();
                         System.out.println("Select the role you want to change to:");
                         System.out.println("1. Office");
                         System.out.println("2. Lecturer");
@@ -256,6 +264,7 @@ public class MenuSystem {
                 
                 switch(choice){
                     case 1:
+                        sc.nextLine();
                         // generate self report
                         System.out.println("Please select an output type:");
                         System.out.println("1. CSV");
@@ -271,6 +280,7 @@ public class MenuSystem {
                         }
                         break;
                     case 2:
+                        sc.nextLine();
                         //change my username
                         System.out.println("Enter your new username: ");
                         String newUsername = sc.next();
@@ -285,6 +295,7 @@ public class MenuSystem {
                         break;
                         
                     case 3:
+                        sc.nextLine();
                         //change my password
                         System.out.println("Enter your new password");
                         String newPassword = sc.next();
@@ -323,6 +334,100 @@ public class MenuSystem {
                 System.out.println("3. Generate course report");
                 System.out.println("4. Change my username");
                 System.out.println("5. Change my password");
+                System.out.println("6. Logout");
+                System.out.println("Enter the number of your choice: ");
+                
+                int choice = sc.nextInt();
+                
+                switch(choice){
+                    case 1:{
+                        // generate Student Report
+                        sc.nextLine();
+                        System.out.println("Please select an output type:");
+                        System.out.println("1. CSV");
+                        System.out.println("2. TEXT");
+                        System.out.println("3. CONSOLE.");
+                        System.out.println("Enter the number of your choice: ");
+                        int outputChoice = sc.nextInt();
+                        OutputType outputType = getOutputTypeFromChoice(outputChoice);
+                        if (outputType != null){
+                            reportGenerator.outputLecturerReport(user.getLecturerId(),outputType);
+                        }else{
+                            System.out.println("Invalid output option, please try again.");
+                        }
+                        break;
+                    }
+                    case 2:{
+                        // Generate Lecturer report
+                        sc.nextLine();
+                        System.out.println("Please select an output type:");
+                        System.out.println("1. CSV");
+                        System.out.println("2. TEXT");
+                        System.out.println("3. CONSOLE.");
+                        System.out.println("Enter the number of your choice: ");
+                        int outputChoice = sc.nextInt();
+                        OutputType outputType = getOutputTypeFromChoice(outputChoice);
+                        if (outputType != null){
+                            reportGenerator.outputLecturerReport(user.getLecturerId(),outputType);
+                        }else{
+                            System.out.println("Invalid output option, please try again.");
+                        }
+                        break;
+                    }
+                    case 3:{
+                        //Generate course Report
+                        sc.nextLine();
+                        System.out.println("Please select an output type:");
+                        System.out.println("1. CSV");
+                        System.out.println("2. TEXT");
+                        System.out.println("3. CONSOLE.");
+                        System.out.println("Enter the number of your choice: ");
+                        int outputChoice = sc.nextInt();
+                        OutputType outputType = getOutputTypeFromChoice(outputChoice);
+                        if (outputType != null){
+                            reportGenerator.outputLecturerReport(user.getLecturerId(),outputType);
+                        }else{
+                            System.out.println("Invalid output option, please try again.");
+                        }
+                        break;
+                    }
+                    case 4:
+                        //change my username
+                        sc.nextLine();
+                        System.out.println("Enter your new username: ");
+                        String newUsername = sc.next();
+                        
+                        //call changeMyUsername method passing the new username
+                        boolean usernameChanged = userService.changeMyUsername(user.getUserID(), newUsername);
+                        if(usernameChanged){
+                            System.out.println("Username Changed successfully.");
+                        }else{
+                            System.out.println("Failed to change username. please try again.");
+                        }
+                        break;
+                        
+                    case 5:
+                        //change my password
+                        sc.nextLine();
+                        System.out.println("Enter your new password");
+                        String newPassword = sc.next();
+                        // Hash the password
+                        String salt = Hasher.generateSalt();
+                        String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000);
+                        // Call the changeMyPassword method passing the hashedPassword and salt
+                        boolean passwordChanged = userService.changeMyPassword(user.getUserID(),hashedPassword,salt);
+                        if(passwordChanged){
+                            System.out.println("Password changed successfully.");
+                        }else{
+                            System.out.println("Error updating password. Please try again.");
+                        }
+                        break;
+                    
+                    case 6:
+                        //logout
+                        validInput = true;
+                        break;
+                }
             }catch(Exception e){
                 
             }
