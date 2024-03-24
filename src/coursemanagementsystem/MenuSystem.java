@@ -89,7 +89,7 @@ public class MenuSystem {
                         String userId = sc.next();
                         
                         if(userId != null){
-                            boolean updatedUser = userService.updateUser();
+                            boolean updatedUser = userService.updateUser(userID),);
                             if(updatedUser){
                                 System.out.println("User updated successfully.");
                             }else{

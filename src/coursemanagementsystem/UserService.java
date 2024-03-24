@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 /**
  *
@@ -159,5 +160,28 @@ public class UserService {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    // method to generate unique userIds
+    public String generateUniqueUserID(){
+        return UUID.randomUUID().toString();
+    }
+    
+    // Method to fetch the salt string of a user in order to update a user on the database
+    public String fetchSaltbyUserId(String userID){
+        String query = "SELECT salt FROM users WHERE user_id = ?";
+        try (Connection conn = databaseIO.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setString(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            
+            if(rs.next())
+                return rs.getString("salt"); // if there is content in the result set it will return the string salt associated to the userID
+            
+        }catch (SQLException e) {
+        System.out.println("Error fetching user salt: " + e.getMessage());
+    }
+    return null; // Return null if salt not found or error occurs
     }
 }
