@@ -252,7 +252,7 @@ public class MenuSystem {
         boolean validInput = false;
         while (!validInput){
             try{
-                System.out.println("Welcome to the ADMIN menu.");
+                System.out.println("Welcome to the LECTURER menu.");
                 
                 System.out.println("1. Generate my report.");
                 System.out.println("2. Change my username.");
@@ -342,6 +342,9 @@ public class MenuSystem {
                 switch(choice){
                     case 1:{
                         // generate Student Report
+                        System.out.println("Enter the student ID for the student report: ");
+                        String studentId = sc.next();
+                        
                         sc.nextLine();
                         System.out.println("Please select an output type:");
                         System.out.println("1. CSV");
@@ -351,7 +354,7 @@ public class MenuSystem {
                         int outputChoice = sc.nextInt();
                         OutputType outputType = getOutputTypeFromChoice(outputChoice);
                         if (outputType != null){
-                            reportGenerator.outputLecturerReport(user.getLecturerId(),outputType);
+                            reportGenerator.outputStudentReport(studentId,outputType);
                         }else{
                             System.out.println("Invalid output option, please try again.");
                         }
@@ -359,6 +362,9 @@ public class MenuSystem {
                     }
                     case 2:{
                         // Generate Lecturer report
+                        System.out.println("Enter the lecturer ID for the lecturer report: ");
+                        String lecturerId = sc.next();
+                        
                         sc.nextLine();
                         System.out.println("Please select an output type:");
                         System.out.println("1. CSV");
@@ -368,7 +374,7 @@ public class MenuSystem {
                         int outputChoice = sc.nextInt();
                         OutputType outputType = getOutputTypeFromChoice(outputChoice);
                         if (outputType != null){
-                            reportGenerator.outputLecturerReport(user.getLecturerId(),outputType);
+                            reportGenerator.outputLecturerReport(lecturerId,outputType);
                         }else{
                             System.out.println("Invalid output option, please try again.");
                         }
@@ -376,6 +382,9 @@ public class MenuSystem {
                     }
                     case 3:{
                         //Generate course Report
+                        System.out.println("Enter the course ID for the course report: ");
+                        String courseId = sc.next();
+                        
                         sc.nextLine();
                         System.out.println("Please select an output type:");
                         System.out.println("1. CSV");
@@ -385,7 +394,7 @@ public class MenuSystem {
                         int outputChoice = sc.nextInt();
                         OutputType outputType = getOutputTypeFromChoice(outputChoice);
                         if (outputType != null){
-                            reportGenerator.outputLecturerReport(user.getLecturerId(),outputType);
+                            reportGenerator.outputCourseReport(courseId,outputType);
                         }else{
                             System.out.println("Invalid output option, please try again.");
                         }
