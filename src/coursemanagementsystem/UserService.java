@@ -167,9 +167,11 @@ public class UserService {
         return UUID.randomUUID().toString();
     }
     
-    // Method to fetch the salt string of a user in order to update a user on the database
-    public String fetchSaltbyUserId(String userID){
-        String query = "SELECT salt FROM users WHERE user_id = ?";
+    // Method to fetch an user from the database by Id
+    public User fetchUserById(String userID){
+        String query = "SELECT username, password, role, lecturer_id FROM users WHERE user_id = ?";
+        User user = null;
+        
         try (Connection conn = databaseIO.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             
@@ -177,7 +179,15 @@ public class UserService {
             ResultSet rs = stmt.executeQuery();
             
             if(rs.next())
-                return rs.getString("salt"); // if there is content in the result set it will return the string salt associated to the userID
+                String username = rs.getString("username");
+                String password = rs.getString("password"); //hashed password
+                String roleStr = rs.getString("role");
+                Role role = Role.valueOf(roleStr.toUpperCase()); 
+                String lecturerId = rs.getString("lecturer_id"); // may be null 
+                String salt = rs.getString("salt"); // Retrieve the salt
+                
+                user = new User(username,password, role, lecturerID)
+            
             
         }catch (SQLException e) {
         System.out.println("Error fetching user salt: " + e.getMessage());

@@ -85,11 +85,14 @@ public class MenuSystem {
                         //AddUser
                     case 2:
                         //updateUser
-                        System.out.println("Enter the user ID of the user you wish to add: ");
+                        System.out.println("Enter the user ID of the user you wish to update: ");
                         String userId = sc.next();
+                        String currentSalt = userService.fetchUserById(userId);
                         
                         if(userId != null){
-                            boolean updatedUser = userService.updateUser(userID),);
+                            boolean updatedUser = userService.updateUser(userID),currentSalt);
+                            
+                            
                             if(updatedUser){
                                 System.out.println("User updated successfully.");
                             }else{

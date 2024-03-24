@@ -11,6 +11,7 @@ public class User {
     private String userID;
     private Role role;
     private String lecturerId;
+    private String salt;
     
     public User(String username, String password, Role role) {
         this.username = username;
@@ -18,11 +19,20 @@ public class User {
         this.role = role;
     }
     
-    public User(String username, String password, Role role, String lecturerId) {
+    public User(String username, String password, Role role, String lecturerId, String salt) {
         this.username = username;
         this.password = password;
         this.role = role;
         this.lecturerId = lecturerId;
+        this.salt = salt;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public String getLecturerId() {
