@@ -19,9 +19,9 @@ public class UserService {
         this.databaseIO = databaseIO;
     }
 
-    public boolean addUSer(User user, String salt) {
+    public boolean addUSer(User user,String plainPassword, String salt) {
         // Hash the password before storing it in the database
-        String hashedPassword = Hasher.hashPassword(user.getPassword(), salt, 1000);
+        String hashedPassword = Hasher.hashPassword(plainPassword, salt, 1000);
         
         String query = "INSERT INTO users (user_id, username, password, role, lecturer_id, salt) VALUES (?, ?, ?, ?, ?, ?)";
         try ( Connection conn = databaseIO.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {

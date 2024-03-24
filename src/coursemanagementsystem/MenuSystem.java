@@ -1,6 +1,7 @@
 package coursemanagementsystem;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,20 +85,39 @@ public class MenuSystem {
                     case 1:
                         //AddUser
                     case 2:
-                        //updateUser
-                        System.out.println("Enter the user ID of the user you wish to update: ");
-                        String userId = sc.next();
-                        String currentSalt = userService.fetchUserById(userId);
-                        
-                        if(userId != null){
-                            boolean updatedUser = userService.updateUser(userID),currentSalt);
-                            
-                            
-                            if(updatedUser){
-                                System.out.println("User updated successfully.");
-                            }else{
-                                System.out.println("Error updating user.Please try again.");
-                            }
+                        sc.nextLine(); // Consume newline
+                        System.out.println("Enter the user ID of the user you wish to update:");
+                        String updateUserId = sc.nextLine();
+
+                        // Fetch user to ensure they exist 
+                        User userToUpdate = userService.fetchUserById(updateUserId);
+                        if (userToUpdate == null) {
+                            System.out.println("User not found.");
+                            break;
+                        }
+
+                        System.out.println("Enter new username (press Enter to keep current):");
+                        String newUsername = sc.nextLine();
+                        if (!newUsername.isEmpty()) userToUpdate.setUsername(newUsername);
+
+                        System.out.println("Enter new role (ADMIN, OFFICE, LECTURER) or press Enter to keep current:");
+                        String newRoleStr = sc.nextLine();
+                        if (!newRoleStr.isEmpty()) userToUpdate.setRole(Role.valueOf(newRoleStr.toUpperCase()));
+
+                        Optional<String> newPassword = Optional.empty();
+                        System.out.println("Do you want to change the password? (yes/no):");
+                        String changePassword = sc.nextLine();
+                        if ("yes".equalsIgnoreCase(changePassword)) {
+                            System.out.println("Enter new password:");
+                            newPassword = Optional.of(sc.nextLine());
+                        }
+
+                        // Call update User method 
+                        boolean updated = userService.updateUser(userToUpdate, newPassword);
+                        if (updated) {
+                            System.out.println("User updated successfully.");
+                        } else {
+                            System.out.println("Failed to update user.");
                         }
                         break;
                     case 3:
