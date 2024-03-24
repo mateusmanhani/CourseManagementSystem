@@ -20,16 +20,26 @@ public class CourseManagementSystem {
 //        
 //        rg.outputStudentReport("s2",OutputType.CONSOLE);
 
-// Initialize DatabaseIO with your actual database connection details
+        // Initialize DatabaseIO with your actual database connection details
         DatabaseIO databaseIO = new MySQLDatabaseIO();
 
-        // Initialize UserService with the DatabaseIO instance
+//        // Call the method to update all user passwords
+//        userService.updateAllUserPasswords();
+//
+//        System.out.println("All user passwords have been updated.");
+    
+    
+        // Initialise services
+        AuthService authService = new AuthService(databaseIO);
         UserService userService = new UserService(databaseIO);
-
-        // Call the method to update all user passwords
-        userService.updateAllUserPasswords();
-
-        System.out.println("All user passwords have been updated.");
+        
+        // Initialise ReportGenerator
+        ReportGenerator reportGenerator = new ReportGenerator(databaseIO);
+        
+    
+   
+         // Call menuSytem
+        MenuSystem menu = new MenuSystem(authService,userService,reportGenerator);
     }
     
 }

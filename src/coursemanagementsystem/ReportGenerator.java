@@ -11,12 +11,11 @@ import java.sql.SQLException;
  */
 public class ReportGenerator {
 
-    private User user;
+//    private User user;
     private DatabaseIO databaseIO;
     private ReportOutputter reportOutputter;
 
-    public ReportGenerator(User user, DatabaseIO databaseIO) {
-        this.user = user;
+    public ReportGenerator(DatabaseIO databaseIO) {
         this.databaseIO = databaseIO;
         this.reportOutputter = new ReportOutputter(); // initialise reportOutputter
     }
@@ -200,7 +199,7 @@ public class ReportGenerator {
     }
 
     // Generate Lecturer Report
-    public String generateLecturerReport(String requestedLecturerId) {
+    public String generateLecturerReport(User user, String requestedLecturerId) {
         StringBuilder report = new StringBuilder();
 
         // Check if the user is an office user or a lecturer trying to access their own report
@@ -258,8 +257,8 @@ public class ReportGenerator {
     }
     
     // Output Student Report
-    public void outputLecturerReport(String lecturerId, OutputType outputType) {
-        String reportContent = generateLecturerReport(lecturerId);
+    public void outputLecturerReport(User user, String lecturerId, OutputType outputType) {
+        String reportContent = generateLecturerReport(user,lecturerId);
         if (reportOutputter == null) {
             System.out.println("ReportOutputter is not initialized.");
         } else {
