@@ -276,7 +276,7 @@ public class MenuSystem {
                         int outputChoice = sc.nextInt();
                         OutputType outputType = getOutputTypeFromChoice(outputChoice);
                         if (outputType != null){
-                            reportGenerator.outputLecturerReport(user.getLecturerId(),outputType);
+                            reportGenerator.outputLecturerReport(user, user.getLecturerId(),outputType);
                         }else{
                             System.out.println("Invalid output option, please try again.");
                         }
@@ -376,7 +376,7 @@ public class MenuSystem {
                         int outputChoice = sc.nextInt();
                         OutputType outputType = getOutputTypeFromChoice(outputChoice);
                         if (outputType != null){
-                            reportGenerator.outputLecturerReport(lecturerId,outputType);
+                            reportGenerator.outputLecturerReport(user,lecturerId,outputType);
                         }else{
                             System.out.println("Invalid output option, please try again.");
                         }

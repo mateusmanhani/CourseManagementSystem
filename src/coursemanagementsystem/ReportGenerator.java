@@ -11,7 +11,6 @@ import java.sql.SQLException;
  */
 public class ReportGenerator {
 
-//    private User user;
     private DatabaseIO databaseIO;
     private ReportOutputter reportOutputter;
 
