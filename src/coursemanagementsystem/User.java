@@ -5,10 +5,10 @@ package coursemanagementsystem;
  * @author Mateus Manhani
  */
 public class User {
-
+    
+    private String userID;
     private String username;
     private String password;
-    private String userID;
     private Role role;
     private String lecturerId;
     private String salt;
@@ -19,14 +19,14 @@ public class User {
         this.role = role;
     }
     
-    public User(String username, String password, Role role, String lecturerId, String salt) {
+    public User(String userID, String username, String password, Role role, String lecturerId, String salt) {
+        this.userID = userID;
         this.username = username;
         this.password = password;
         this.role = role;
         this.lecturerId = lecturerId;
         this.salt = salt;
     }
-
     public String getSalt() {
         return salt;
     }

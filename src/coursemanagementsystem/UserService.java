@@ -178,7 +178,7 @@ public class UserService {
             stmt.setString(1, userID);
             ResultSet rs = stmt.executeQuery();
             
-            if(rs.next())
+            if(rs.next()){
                 String username = rs.getString("username");
                 String password = rs.getString("password"); //hashed password
                 String roleStr = rs.getString("role");
@@ -186,12 +186,11 @@ public class UserService {
                 String lecturerId = rs.getString("lecturer_id"); // may be null 
                 String salt = rs.getString("salt"); // Retrieve the salt
                 
-                user = new User(username,password, role, lecturerID)
-            
-            
+                user = new User(userID, username,password, role, lecturerId, salt);
+            }
         }catch (SQLException e) {
-        System.out.println("Error fetching user salt: " + e.getMessage());
-    }
-    return null; // Return null if salt not found or error occurs
+            System.out.println("SQLException in fetchUserById: " + e.getMessage());
+        }
+        return user;
     }
 }
