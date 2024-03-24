@@ -37,8 +37,10 @@ public class UserService {
             return rowsAffected > 0; // If any rows were actually updated it ill return true;
 
         } catch (SQLException e) {
-            System.out.println("Error adding user.");
-            e.getSQLState();
+            e.printStackTrace(); // Or use a logger to log this exception
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("Error Code: " + e.getErrorCode());
+            System.out.println("Message: " + e.getMessage());
             return false;
         }
     }

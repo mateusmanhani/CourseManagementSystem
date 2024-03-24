@@ -61,12 +61,15 @@ public class MenuSystem {
             case OFFICE:
                 // SHOW OFFICE MENU
                 officeMenu(user,sc);
+                break;
             case LECTURER:
                 //SHOW LECTURER MENU
                 lecturerMenu(user,sc);
+                break;
             case ADMIN:
                 //SHOW ADMIN MENU
                 adminMenu(user, sc);
+                break;
         }
         
     }
