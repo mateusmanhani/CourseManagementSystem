@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -57,26 +58,42 @@ public class UserService {
         }
     }
 
-    public boolean updateUser(User user, String salt) {
-        // Hash the new password before updating the database
-        String hashedPassword = Hasher.hashPassword(user.getPassword(), salt, 1000);
-    
-        String query = "UPDATE users SET username = ?, password = ?, role = ?, lecturer_id = ?, salt = ? WHERE user_id = ?";
-        try ( Connection conn = databaseIO.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
-            
+    public boolean updateUser(User user, Optional<String> newPassword) {
+        // Start building the SQL query
+        String baseQuery = "UPDATE users SET username = ?, role = ?, lecturer_id = ?";
+        String passwordQueryPart = ", password = ?, salt = ?";
+        String whereClause = " WHERE user_id = ?";
+
+        // Decide if password needs to be updated
+        boolean updatePassword = newPassword.isPresent();
+        String query = baseQuery + (updatePassword ? passwordQueryPart : "") + whereClause;
+
+        try (Connection conn = databaseIO.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            // Set common fields: username, role, lecturer_id
             stmt.setString(1, user.getUsername());
-            stmt.setString(2, hashedPassword);
-            stmt.setString(3, user.getRole().name());
-            stmt.setString(4, user.getRole() == Role.LECTURER ? user.getLecturerId() : null); // if user role is LECTURER also insert lecturerId else insert null
-            stmt.setString(5, salt);
-            stmt.setString(6, user.getUserID());
-            
+            stmt.setString(2, user.getRole().name());
+            stmt.setString(3, user.getLecturerId()); // This can be null
+
+            int paramIndex = 4; // Next parameter index
+
+            if (updatePassword) {
+                // Extract the password value safely
+                String actualNewPassword = newPassword.get();
+                // Hash the password
+                String newSalt = Hasher.generateSalt();
+                String hashedPassword = Hasher.hashPassword(actualNewPassword, newSalt, 1000);
+                stmt.setString(paramIndex++, hashedPassword);
+                stmt.setString(paramIndex++, newSalt);
+            }
+
+            stmt.setString(paramIndex, user.getUserID()); // Finally, set the user_id for the WHERE clause
+
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0; //return true if any rows are affected
-            
-        }catch (SQLException e) {
-            System.out.println("Error adding user.");
-            e.getSQLState();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating user: " + e.getMessage());
             return false;
         }
     }
@@ -180,13 +197,12 @@ public class UserService {
             
             if(rs.next()){
                 String username = rs.getString("username");
-                String password = rs.getString("password"); //hashed password
                 String roleStr = rs.getString("role");
                 Role role = Role.valueOf(roleStr.toUpperCase()); 
                 String lecturerId = rs.getString("lecturer_id"); // may be null 
                 String salt = rs.getString("salt"); // Retrieve the salt
                 
-                user = new User(userID, username,password, role, lecturerId, salt);
+                user = new User(userID, username, role, lecturerId, salt);
             }
         }catch (SQLException e) {
             System.out.println("SQLException in fetchUserById: " + e.getMessage());

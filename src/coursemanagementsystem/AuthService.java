@@ -38,7 +38,7 @@ public class AuthService {
                     // compare the hashed entered password with the stored hash
                     if (hashedEnteredPassword.equals(storedHash)) {
                         //Authentication Successfull
-                        return new User(userId, username, role, lecturerId);
+                        return new User(userId, username, role, lecturerId, salt);
                     }
                 }
             } catch (SQLException e) {

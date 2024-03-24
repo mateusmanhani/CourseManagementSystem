@@ -8,21 +8,18 @@ public class User {
     
     private String userID;
     private String username;
-    private String password;
     private Role role;
     private String lecturerId;
     private String salt;
     
     public User(String username, String password, Role role) {
         this.username = username;
-        this.password = password;
         this.role = role;
     }
     
-    public User(String userID, String username, String password, Role role, String lecturerId, String salt) {
+    public User(String userID, String username, Role role, String lecturerId, String salt) {
         this.userID = userID;
         this.username = username;
-        this.password = password;
         this.role = role;
         this.lecturerId = lecturerId;
         this.salt = salt;
@@ -44,9 +41,6 @@ public class User {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
     public Role getRole() {
         return role;
@@ -59,10 +53,6 @@ public class User {
     // setters
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setRole(Role role) {
