@@ -38,7 +38,7 @@ public class MenuSystem {
 
                 if(user != null){
                     System.out.println("Login Successful.");
-                    // continue with operations...
+                    showUserMenu(user, sc);
                 }else{
                     System.out.println("Login failed. Please check your username and password.");
                     // do a loop to keep going
@@ -50,17 +50,19 @@ public class MenuSystem {
         }
     }
     
-    public void showUserMenu(User user){
+    public void showUserMenu(User user, Scanner sc){
         Role userRole = user.getRole();
         
         switch(userRole){
             case OFFICE:
                 // SHOW OFFICE MENU
-                
+                officeMenu(user,sc);
             case LECTURER:
                 //SHOW LECTURER MENU
+                lecturerMenu(user,sc);
             case ADMIN:
                 //SHOW ADMIN MENU
+                adminMenu(user, sc);
         }
         
     }
