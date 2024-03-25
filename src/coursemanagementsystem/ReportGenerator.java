@@ -113,7 +113,7 @@ public class ReportGenerator {
             String completedModulesQuery = "SELECT m.module_name, g.grade "
                     + "FROM grades g "
                     + "JOIN modules m ON g.module_id = m.module_id "
-                    + "WHERE g.student_id = ? AND g.status = 'completed';";
+                    + "WHERE g.student_id = ? AND g.status = 'Complete';";
 
             // Fetch modules to repeat (assuming a grade below 40 is a fail)
             String modulesToRepeatQuery = "SELECT m.module_name "
