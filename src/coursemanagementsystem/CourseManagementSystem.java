@@ -10,14 +10,6 @@ public class CourseManagementSystem {
      * 
      */
     public static void main(String[] args) {
-
-//        // Call the method to update all user passwords to hashed passwords in order to test
-//        userService.updateAllUserPasswords();
-//
-//        System.out.println("All user passwords have been updated.");
-    
-
-    
         // Initialize DatabaseIO with your actual database connection details
         DatabaseIO databaseIO = new MySQLDatabaseIO();
     
@@ -28,8 +20,15 @@ public class CourseManagementSystem {
         // Initialise ReportGenerator
         ReportGenerator reportGenerator = new ReportGenerator(databaseIO);
         
+        // Call the method to update all user passwords to hashed passwords in order to test
+        // In the csv given for the users all passwords are unhashed so you can run this code to hash them 
+        // you can check the actual password on the csv in order to test
+        userService.updateAllUserPasswords();
+
+        System.out.println("All user passwords have been updated.");
+        
         MenuSystem menu = new MenuSystem(authService,userService,reportGenerator);
-            menu.showLoginScreen();
+        menu.showLoginScreen();
         
 //        // Instanciate Test admin user/ Please uncomment this section to test
 //        Role role = Role.ADMIN;

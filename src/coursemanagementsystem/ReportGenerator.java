@@ -207,29 +207,32 @@ public class ReportGenerator {
             try {
                 conn = databaseIO.getConnection();
 
-                // query to fetch lecturer information remains the same
-                String query = "SELECT l.lecturer_name, l.role, m.module_name, m.num_students "
+                // Modified query to fetch lecturer information including modules_available
+                String query = "SELECT l.lecturer_name, l.role, l.modules_available, m.module_name, m.num_students "
                         + "FROM lecturers l "
-                        + "JOIN modules m ON l.lecturer_id = m.lecturer_id "
+                        + "LEFT JOIN modules m ON l.lecturer_id = m.lecturer_id "
                         + "WHERE l.lecturer_id = ?;";
 
                 // Execute query and build the report
-                try ( PreparedStatement stmt = conn.prepareStatement(query)) {
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, requestedLecturerId);
-                    try ( ResultSet rs = stmt.executeQuery()) {
+                    try (ResultSet rs = stmt.executeQuery()) {
                         boolean found = false;
                         while (rs.next()) {
                             if (!found) { // Header information about the lecturer, printed once
                                 String lecturerName = rs.getString("lecturer_name");
                                 String lecturerRole = rs.getString("role");
-                                report.append(String.format("Lecturer Report for: %s (%s)%nRole: %s%n%n",
-                                        lecturerName, requestedLecturerId, lecturerRole));
+                                String modulesAvailable = rs.getString("modules_available");
+                                report.append(String.format("Lecturer Report for: %s (%s)%nRole: %s%nModules Available: %s%n%n",
+                                        lecturerName, requestedLecturerId, lecturerRole, modulesAvailable));
                                 report.append("Modules Teaching This Semester:\n");
                                 found = true;
                             }
                             String moduleName = rs.getString("module_name");
-                            int numStudents = rs.getInt("num_students");
-                            report.append(String.format("    Module: %s, Students: %d%n", moduleName, numStudents));
+                            if (moduleName != null) { // Check if the lecturer is assigned to any module
+                                int numStudents = rs.getInt("num_students");
+                                report.append(String.format("    Module: %s, Students: %d%n", moduleName, numStudents));
+                            }
                         }
                         if (!found) { // If no records were found
                             return "Lecturer not found or has no modules assigned.";
