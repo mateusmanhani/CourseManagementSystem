@@ -30,7 +30,10 @@ public class CourseManagementSystem {
         MenuSystem menu = new MenuSystem(authService,userService,reportGenerator);
         menu.showLoginScreen();
         
-//        // Instanciate Test admin user/ Please uncomment this section to test
+//        // Instanciate Test admin user/ Please uncomment this section to test or use the admin user in the users table or the office user
+          // user: admin/ password: java
+          //user: office/ password office123
+        
 //        Role role = Role.ADMIN;
 //        String adminUserId = "123";
 //        User adminUser = new User(adminUserId,"admin",role);
