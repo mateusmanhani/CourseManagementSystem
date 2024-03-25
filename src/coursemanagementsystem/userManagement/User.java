@@ -1,4 +1,4 @@
-package coursemanagementsystem;
+package coursemanagementsystem.userManagement;
 
 /**
  *

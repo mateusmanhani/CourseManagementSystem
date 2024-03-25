@@ -1,5 +1,5 @@
 
-package coursemanagementsystem;
+package coursemanagementsystem.databaseImplementation;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,5 +1,6 @@
-package coursemanagementsystem;
+package coursemanagementsystem.userManagement;
 
+import coursemanagementsystem.databaseImplementation.DatabaseIO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

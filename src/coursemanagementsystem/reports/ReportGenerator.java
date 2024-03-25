@@ -1,5 +1,8 @@
-package coursemanagementsystem;
+package coursemanagementsystem.reports;
 
+import coursemanagementsystem.databaseImplementation.DatabaseIO;
+import coursemanagementsystem.userManagement.Role;
+import coursemanagementsystem.userManagement.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,4 +1,4 @@
-package coursemanagementsystem;
+package coursemanagementsystem.reports;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

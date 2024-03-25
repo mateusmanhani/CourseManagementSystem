@@ -1,5 +1,5 @@
 
-package coursemanagementsystem;
+package coursemanagementsystem.userManagement;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

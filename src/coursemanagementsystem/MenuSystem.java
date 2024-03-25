@@ -1,5 +1,12 @@
 package coursemanagementsystem;
 
+import coursemanagementsystem.userManagement.Hasher;
+import coursemanagementsystem.userManagement.UserService;
+import coursemanagementsystem.userManagement.Role;
+import coursemanagementsystem.userManagement.User;
+import coursemanagementsystem.userManagement.AuthService;
+import coursemanagementsystem.reports.ReportGenerator;
+import coursemanagementsystem.reports.OutputType;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.Scanner;

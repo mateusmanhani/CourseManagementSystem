@@ -1,5 +1,11 @@
 package coursemanagementsystem;
 
+import coursemanagementsystem.databaseImplementation.MySQLDatabaseIO;
+import coursemanagementsystem.databaseImplementation.DatabaseIO;
+import coursemanagementsystem.userManagement.UserService;
+import coursemanagementsystem.userManagement.AuthService;
+import coursemanagementsystem.reports.ReportGenerator;
+
 /**
  *
  * @author Mateus Manhani
