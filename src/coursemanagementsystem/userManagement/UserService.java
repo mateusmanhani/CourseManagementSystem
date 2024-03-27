@@ -287,7 +287,11 @@ public class UserService {
         return false;
     }
 }
-    
+    /**
+     * This method allows changing a user's role in the database
+     * @param userId the user id of the user to be updated
+     * @param newRole the role to be updated
+     */
     public boolean changeMyRole(String userId, Role newRole) {
         String lockQuery = "LOCK TABLES users WRITE";
         String unlockQuery = "UNLOCK TABLES";
@@ -320,12 +324,18 @@ public class UserService {
     }
     }
     
-    // method to generate unique userIds
+    /**
+     * This method generates a string to represent a unique user id
+     * @return String uniqueID randomly generated string
+     */
     public String generateUniqueUserID(){
         return UUID.randomUUID().toString();
     }
     
-    // Method to fetch an user from the database by Id
+    /**
+     * This method fetches a user in the interface by their user id.
+     * @param userID the user id 
+     */
     public User fetchUserById(String userID){
         String query = "SELECT username, password, role, lecturer_id, salt FROM users WHERE user_id = ?";
         User user = null;

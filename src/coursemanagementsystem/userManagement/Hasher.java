@@ -12,10 +12,19 @@ import java.util.Base64;
  */
 public class Hasher {
     
-    public static String hashPassword(String password, String salt, int iterations) {
+        /**
+     * This method takes in a plain password, a salt string, and the number of iterations
+     * and returns the hashed and salted password.
+     *
+     * @param plainPassword The plain password to be hashed and salted.
+     * @param salt A string used as salt for hashing.
+     * @param iterations The number of iterations for hashing.
+     * @return The hashed and salted password as a string.
+     */
+    public static String hashPassword(String plainPassword, String salt, int iterations) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = (password + salt).getBytes();
+            byte[] hash = (plainPassword + salt).getBytes();
             for (int i = 0; i < iterations; i++) {
                 md.update(hash);
                 hash = md.digest();
@@ -26,7 +35,11 @@ public class Hasher {
             return null;
         }
     }
-    
+    /**
+     * This method generates a salt string
+     * @return String salt
+     *
+     */
     public static String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] saltBytes = new byte[16];
