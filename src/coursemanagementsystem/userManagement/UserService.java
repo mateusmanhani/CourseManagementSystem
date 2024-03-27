@@ -327,7 +327,7 @@ public class UserService {
     
     // Method to fetch an user from the database by Id
     public User fetchUserById(String userID){
-        String query = "SELECT username, password, role, lecturer_id FROM users WHERE user_id = ?";
+        String query = "SELECT username, password, role, lecturer_id, salt FROM users WHERE user_id = ?";
         User user = null;
         
         try (Connection conn = databaseIO.getConnection();
