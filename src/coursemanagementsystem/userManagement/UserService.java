@@ -233,18 +233,38 @@ public class UserService {
     }
     
     public boolean changeMyPassword(String userId, String newPassword, String salt) {
-    // Hash the new password before updating the database
-    String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000); // Example: Using IterativeHasher to hash the password
+        // Hash the new password before updating the database
+        String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000); // Example: Using IterativeHasher to hash the password
     
-    String query = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
-    try (Connection conn = databaseIO.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(query)) {
-        stmt.setString(1, hashedPassword);
-        stmt.setString(2, salt);
-        stmt.setString(3, userId);
-        int rowsAffected = stmt.executeUpdate();
-        return rowsAffected > 0; //If any rows are affected return true
-    } catch (SQLException e) {
+        String lockQuery = "LOCK TABLES users WRITE";
+        String unlockQuery = "UNLOCK TABLES";
+    
+        String query = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
+        
+        try (Connection conn = databaseIO.getConnection(); 
+         Statement lockStmt = conn.createStatement()) {
+
+            // Lock the table before any operations
+            lockStmt.execute(lockQuery);
+        
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, hashedPassword);
+                stmt.setString(2, salt);
+                stmt.setString(3, userId);
+                int rowsAffected = stmt.executeUpdate();
+                return rowsAffected > 0; //If any rows are affected return true
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }finally{
+                // Ensure the table is unlocked even if there's an exception
+                try{
+                    lockStmt.execute(unlockQuery);
+                } catch(SQLException e){
+                    System.out.println("Error unlocking table: " + e.getMessage());
+                }
+            }
+        }catch (SQLException e) {
         e.printStackTrace();
         return false;
     }
