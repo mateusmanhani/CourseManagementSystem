@@ -210,7 +210,7 @@ public class ReportGenerator {
             try {
                 conn = databaseIO.getConnection();
 
-                // Modified query to fetch lecturer information including modules_available
+                //query to fetch lecturer information including modules_available
                 String query = "SELECT l.lecturer_name, l.role, l.modules_available, m.module_name, m.num_students "
                         + "FROM lecturers l "
                         + "LEFT JOIN modules m ON l.lecturer_id = m.lecturer_id "
