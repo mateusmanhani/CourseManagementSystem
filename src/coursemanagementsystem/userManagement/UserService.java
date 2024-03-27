@@ -271,17 +271,35 @@ public class UserService {
 }
     
     public boolean changeMyRole(String userId, Role newRole) {
+        String lockQuery = "LOCK TABLES users WRITE";
+        String unlockQuery = "UNLOCK TABLES";
         String query = "UPDATE users SET role = ? WHERE user_id = ?";
-        try (Connection conn = databaseIO.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, newRole.name());
-            stmt.setString(2, userId);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0; //If any rows are affected return true
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        
+        try (Connection conn = databaseIO.getConnection(); 
+         Statement lockStmt = conn.createStatement()) {
+
+            // Lock the table before any operations
+            lockStmt.execute(lockQuery);
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, newRole.name());
+                stmt.setString(2, userId);
+                int rowsAffected = stmt.executeUpdate();
+                return rowsAffected > 0; //If any rows are affected return true
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }finally{
+                // Ensure the table is unlocked even if there's an exception
+                try{
+                    lockStmt.execute(unlockQuery);
+                } catch(SQLException e){
+                    System.out.println("Error unlocking table: " + e.getMessage());
+                }
+            }
+        }catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
     }
     
     // method to generate unique userIds
