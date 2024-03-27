@@ -94,68 +94,69 @@ public class UserService {
     }
 
     public boolean updateUser(User user, Optional<String> newPassword) {
-    String lockQuery = "LOCK TABLES users WRITE";
-    String unlockQuery = "UNLOCK TABLES";
+        String lockQuery = "LOCK TABLES users WRITE";
+        String unlockQuery = "UNLOCK TABLES";
 
-    // Start building the SQL query
-    String baseQuery = "UPDATE users SET username = ?, role = ?, lecturer_id = ?";
-    String passwordQueryPart = ", password = ?, salt = ?";
-    String whereClause = " WHERE user_id = ?";
+        // Start building the SQL query
+        String baseQuery = "UPDATE users SET username = ?, role = ?, lecturer_id = ?";
+        String passwordQueryPart = ", password = ?, salt = ?";
+        String whereClause = " WHERE user_id = ?";
 
-    Connection conn = null;
-    Statement lockStmt = null;
-    try {
-        conn = databaseIO.getConnection();
-        lockStmt = conn.createStatement();
-
-        // Lock the table before any operations
-        lockStmt.execute(lockQuery);
-
-        boolean updatePassword = newPassword.isPresent();
-        String query = baseQuery + (updatePassword ? passwordQueryPart : "") + whereClause;
-
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            // Set common fields: username, role, lecturer_id
-            stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getRole().name());
-            stmt.setString(3, user.getLecturerId()); // This can be null
-
-            int paramIndex = 4; // Next parameter index
-
-            if (updatePassword) {
-                // Extract the password value safely
-                String actualNewPassword = newPassword.get();
-                // Hash the password
-                String newSalt = Hasher.generateSalt();
-                String hashedPassword = Hasher.hashPassword(actualNewPassword, newSalt, 1000);
-                stmt.setString(paramIndex++, hashedPassword);
-                stmt.setString(paramIndex++, newSalt);
-            }
-
-            stmt.setString(paramIndex, user.getUserID()); // Finally, set the user_id for the WHERE clause
-
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            System.out.println("Error updating user: " + e.getMessage());
-            return false;
-        }
-    } catch (SQLException e) {
-        System.out.println("Error managing database resources: " + e.getMessage());
-        return false;
-    } finally {
-        if (lockStmt != null) {
-            try {
-                // Unlock the table in the finally block to ensure it executes
-                lockStmt.execute(unlockQuery);
-            } catch (SQLException e) {
-                System.out.println("Error unlocking tables: " + e.getMessage());
-            }
-        }
+        Connection conn = null;
+        Statement lockStmt = null;
         try {
-            if (conn != null) conn.close();
+            conn = databaseIO.getConnection();
+            lockStmt = conn.createStatement();
+
+            // Lock the table before any operations
+            lockStmt.execute(lockQuery);
+
+            boolean updatePassword = newPassword.isPresent();
+            String query = baseQuery + (updatePassword ? passwordQueryPart : "") + whereClause;
+
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                // Set common fields: username, role, lecturer_id
+                stmt.setString(1, user.getUsername());
+                stmt.setString(2, user.getRole().name());
+                stmt.setString(3, user.getLecturerId()); // This can be null
+
+                int paramIndex = 4; // Next parameter index
+
+                if (updatePassword) {
+                    // Extract the password value safely
+                    String actualNewPassword = newPassword.get();
+                    // Hash the password
+                    String newSalt = Hasher.generateSalt();
+                    String hashedPassword = Hasher.hashPassword(actualNewPassword, newSalt, 1000);
+                    stmt.setString(paramIndex++, hashedPassword);
+                    stmt.setString(paramIndex++, newSalt);
+                }
+
+                stmt.setString(paramIndex, user.getUserID()); // Finally, set the user_id for the WHERE clause
+
+                int rowsAffected = stmt.executeUpdate();
+                return rowsAffected > 0;
+            } catch (SQLException e) {
+                System.out.println("Error updating user: " + e.getMessage());
+                return false;
+            }
         } catch (SQLException e) {
-            System.out.println("Error closing connection: " + e.getMessage());
+            System.out.println("Error managing database resources: " + e.getMessage());
+            return false;
+        } finally {
+            if (lockStmt != null) {
+                try {
+                    // Unlock the table in the finally block to ensure it executes
+                    lockStmt.execute(unlockQuery);
+                } catch (SQLException e) {
+                    System.out.println("Error unlocking tables: " + e.getMessage());
+                }
+            }
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                System.out.println("Error closing connection: " + e.getMessage());
+            }
         }
     }
     
@@ -199,17 +200,36 @@ public class UserService {
 }
     
     public boolean changeMyUsername(String userId, String newUsername) {
+        String lockQuery = "LOCK TABLES users WRITE";
+        String unlockQuery = "UNLOCK TABLES";
         String query = "UPDATE users SET username = ? WHERE user_id = ?";
+        
         try (Connection conn = databaseIO.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, newUsername);
-            stmt.setString(2, userId);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0; //If any rows are affected return true
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+         Statement lockStmt = conn.createStatement()) {
+
+            // Lock the table before any operations
+            lockStmt.execute(lockQuery);
+            
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, newUsername);
+                stmt.setString(2, userId);
+                int rowsAffected = stmt.executeUpdate();
+                return rowsAffected > 0; //If any rows are affected return true
+            }catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            } finally{
+                // Ensure the table is unlocked even if there's an exception
+                try{
+                    lockStmt.execute(unlockQuery);
+                } catch(SQLException e){
+                    System.out.println("Error unlocking table: " + e.getMessage());
+                }
+            }
+        }catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
     }
     
     public boolean changeMyPassword(String userId, String newPassword, String salt) {
