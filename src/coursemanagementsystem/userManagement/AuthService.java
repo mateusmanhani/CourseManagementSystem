@@ -17,7 +17,14 @@ public class AuthService {
     public AuthService(DatabaseIO databaseIO) {
         this.databaseIO = databaseIO;
     }
-
+    
+    /**
+     * This method authenticates and return an user based on an entered password that is then hashed and compared against the hashed password in the database and the user's salt .
+     * @param username
+     * @param enteredPassword
+     * 
+     * @return user object
+     */
     public User authenticateUser(String username, String enteredPassword) throws SQLException {
         String query = "SELECT user_id, username, role, lecturer_id, password, salt FROM users WHERE username = ?";
 

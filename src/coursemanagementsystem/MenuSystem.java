@@ -28,6 +28,10 @@ public class MenuSystem {
         this.reportGenerator = reportGenerator;
     }
     
+    /**
+     * This method displays the login screen on the terminal
+     *
+     */
     public void showLoginScreen(){
         boolean validInput = false;
         while(!validInput){
@@ -61,27 +65,39 @@ public class MenuSystem {
         }
     }
     
-    public void showUserMenu(User user, Scanner sc){
+        /**
+     * This method displays a user specific menu based on the role of the user
+     * 
+     * @param user the users accessing the menu
+     * @param scanner a scanner object
+     */
+    public void showUserMenu(User user, Scanner scanner){
         Role userRole = user.getRole();
         
         switch(userRole){
             case OFFICE:
                 // SHOW OFFICE MENU
-                officeMenu(user,sc);
+                officeMenu(user,scanner);
                 break;
             case LECTURER:
                 //SHOW LECTURER MENU
-                lecturerMenu(user,sc);
+                lecturerMenu(user,scanner);
                 break;
             case ADMIN:
                 //SHOW ADMIN MENU
-                adminMenu(user, sc);
+                adminMenu(user, scanner);
                 break;
         }
         
     }
     
-    public void adminMenu(User user, Scanner sc){
+        /**
+     * This method displays the admin menu with the admin possible actions
+     * 
+     * @param user the users accessing the menu
+     * @param scanner a scanner object
+     */
+    public void adminMenu(User user, Scanner scanner){
 //        UserService userService = new UserService(databaseIO);
         boolean validInput = false;
         while (!validInput){
@@ -96,26 +112,26 @@ public class MenuSystem {
                 System.out.println("7. Logout");
                 System.out.println("Enter the number of your choice: ");
                 
-                int choice = sc.nextInt();
+                int choice = scanner.nextInt();
                 
                 switch(choice){
                     case 1:{
                         //AddUser
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Enter username: ");
-                        String username = sc.nextLine();
+                        String username = scanner.nextLine();
                         
                         System.out.println("Enter password: ");
-                        String password = sc.nextLine();
+                        String password = scanner.nextLine();
                         
                         System.out.println("Enter role (ADMIN, OFFICE, LECTURER): ");
-                        String roleStr = sc.nextLine();
+                        String roleStr = scanner.nextLine();
                         Role role = Role.valueOf(roleStr.toUpperCase());
                         
                         String lecturerId = null;
                         if(role == Role.LECTURER){
                             System.out.println("Enter lecturer ID: ");
-                            lecturerId = sc.nextLine();
+                            lecturerId = scanner.nextLine();
                         }
                         
                         String salt = Hasher.generateSalt();
@@ -132,9 +148,9 @@ public class MenuSystem {
                     }
                     case 2:{
                         //update user
-                        sc.nextLine(); // Consume newline
+                        scanner.nextLine(); // Consume newline
                         System.out.println("Enter the user ID of the user you wish to update: ");
-                        String updateUserId = sc.nextLine();
+                        String updateUserId = scanner.nextLine();
 
                         // Fetch user to ensure they exist 
                         User userToUpdate = userService.fetchUserById(updateUserId);
@@ -144,19 +160,19 @@ public class MenuSystem {
                         }
 
                         System.out.println("Enter new username (press Enter to keep current): ");
-                        String newUsername = sc.nextLine();
+                        String newUsername = scanner.nextLine();
                         if (!newUsername.isEmpty()) userToUpdate.setUsername(newUsername);
 
                         System.out.println("Enter new role (ADMIN, OFFICE, LECTURER) or press Enter to keep current: ");
-                        String newRoleStr = sc.nextLine();
+                        String newRoleStr = scanner.nextLine();
                         if (!newRoleStr.isEmpty()) userToUpdate.setRole(Role.valueOf(newRoleStr.toUpperCase()));
 
                         Optional<String> newPassword = Optional.empty();
                         System.out.println("Do you want to change the password? (yes/no): ");
-                        String changePassword = sc.nextLine();
+                        String changePassword = scanner.nextLine();
                         if ("yes".equalsIgnoreCase(changePassword)) {
                             System.out.println("Enter new password:");
-                            newPassword = Optional.of(sc.nextLine());
+                            newPassword = Optional.of(scanner.nextLine());
                         }
 
                         // Call update User method 
@@ -170,9 +186,9 @@ public class MenuSystem {
                     }
                     case 3:
                         //deleteUser
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Enter the user ID of the user you wish to delete: ");
-                        String deleteUserId = sc.next();
+                        String deleteUserId = scanner.next();
                         
                         if(deleteUserId != null){
                             boolean deleted = userService.deleteUser(deleteUserId);
@@ -185,9 +201,9 @@ public class MenuSystem {
                         break;
                     case 4:{
                         // changeMyUsername
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Enter your new username: ");
-                        String newUsername = sc.next();
+                        String newUsername = scanner.next();
                         
                         //call changeMyUsername method passing the new username
                         boolean usernameChanged = userService.changeMyUsername(user.getUserID(), newUsername);
@@ -200,9 +216,9 @@ public class MenuSystem {
                     }
                     case 5:{
                         // changeMyPassword
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Enter your new password");
-                        String newPassword = sc.next();
+                        String newPassword = scanner.next();
                         // Hash the password
                         String salt = Hasher.generateSalt();
                         String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000);
@@ -217,12 +233,12 @@ public class MenuSystem {
                     }
                     case 6:
                         // changeMyRole
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Select the role you want to change to:");
                         System.out.println("1. Office");
                         System.out.println("2. Lecturer");
                         System.out.println("3. Admin");
-                        int roleChoice = sc.nextInt();
+                        int roleChoice = scanner.nextInt();
                         Role newRole = null;
                         switch(roleChoice){
                             case 1:
@@ -264,7 +280,13 @@ public class MenuSystem {
         }
     }
     
-    public void lecturerMenu(User user, Scanner sc){
+    /**
+     * This method displays the lecturer menu with the lecturer possible actions
+     * 
+     * @param user the users accessing the menu
+     * @param scanner a scanner object
+     */
+    public void lecturerMenu(User user, Scanner scanner){
         boolean validInput = false;
         while (!validInput){
             try{
@@ -276,18 +298,18 @@ public class MenuSystem {
                 System.out.println("4. Logout.");
                 System.out.println("Enter the number of your choice: ");
                 
-                int choice = sc.nextInt();
+                int choice = scanner.nextInt();
                 
                 switch(choice){
                     case 1:
-                        sc.nextLine();
+                        scanner.nextLine();
                         // generate self report
                         System.out.println("Please select an output type:");
                         System.out.println("1. CSV");
                         System.out.println("2. TEXT");
                         System.out.println("3. CONSOLE.");
                         System.out.println("Enter the number of your choice: ");
-                        int outputChoice = sc.nextInt();
+                        int outputChoice = scanner.nextInt();
                         OutputType outputType = getOutputTypeFromChoice(outputChoice);
                         if (outputType != null){
                             reportGenerator.outputLecturerReport(user, user.getLecturerId(),outputType);
@@ -296,10 +318,10 @@ public class MenuSystem {
                         }
                         break;
                     case 2:
-                        sc.nextLine();
+                        scanner.nextLine();
                         //change my username
                         System.out.println("Enter your new username: ");
-                        String newUsername = sc.next();
+                        String newUsername = scanner.next();
                         
                         //call changeMyUsername method passing the new username
                         boolean usernameChanged = userService.changeMyUsername(user.getUserID(), newUsername);
@@ -311,10 +333,10 @@ public class MenuSystem {
                         break;
                         
                     case 3:
-                        sc.nextLine();
+                        scanner.nextLine();
                         //change my password
                         System.out.println("Enter your new password");
-                        String newPassword = sc.next();
+                        String newPassword = scanner.next();
                         // Hash the password
                         String salt = Hasher.generateSalt();
                         String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000);
@@ -333,14 +355,20 @@ public class MenuSystem {
                         System.out.println("Invalid option please try again.");
                 }
             }catch(Exception e){
-                sc.nextLine(); // Clear scanner buffer
+                scanner.nextLine(); // Clear scanner buffer
                 System.out.println("An error occured please try again.");
             }
         }
 
     }
     
-    public void officeMenu(User user, Scanner sc){
+    /**
+     * This method displays the office menu with the office possible actions
+     * 
+     * @param user the users accessing the menu
+     * @param scanner a scanner object
+     */
+    public void officeMenu(User user, Scanner scanner){
         boolean validInput = false;
         while (!validInput){
             try{
@@ -353,21 +381,21 @@ public class MenuSystem {
                 System.out.println("6. Logout");
                 System.out.println("Enter the number of your choice: ");
                 
-                int choice = sc.nextInt();
+                int choice = scanner.nextInt();
                 
                 switch(choice){
                     case 1:{
                         // generate Student Report
                         System.out.println("Enter the student ID for the student report: ");
-                        String studentId = sc.next();
+                        String studentId = scanner.next();
                         
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Please select an output type:");
                         System.out.println("1. CSV");
                         System.out.println("2. TEXT");
                         System.out.println("3. CONSOLE.");
                         System.out.println("Enter the number of your choice: ");
-                        int outputChoice = sc.nextInt();
+                        int outputChoice = scanner.nextInt();
                         OutputType outputType = getOutputTypeFromChoice(outputChoice);
                         if (outputType != null){
                             reportGenerator.outputStudentReport(studentId,outputType);
@@ -379,15 +407,15 @@ public class MenuSystem {
                     case 2:{
                         // Generate Lecturer report
                         System.out.println("Enter the lecturer ID for the lecturer report: ");
-                        String lecturerId = sc.next();
+                        String lecturerId = scanner.next();
                         
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Please select an output type:");
                         System.out.println("1. CSV");
                         System.out.println("2. TEXT");
                         System.out.println("3. CONSOLE.");
                         System.out.println("Enter the number of your choice: ");
-                        int outputChoice = sc.nextInt();
+                        int outputChoice = scanner.nextInt();
                         OutputType outputType = getOutputTypeFromChoice(outputChoice);
                         if (outputType != null){
                             reportGenerator.outputLecturerReport(user,lecturerId,outputType);
@@ -399,15 +427,15 @@ public class MenuSystem {
                     case 3:{
                         //Generate course Report
                         System.out.println("Enter the course ID for the course report: ");
-                        String courseId = sc.next();
+                        String courseId = scanner.next();
                         
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Please select an output type:");
                         System.out.println("1. CSV");
                         System.out.println("2. TEXT");
                         System.out.println("3. CONSOLE.");
                         System.out.println("Enter the number of your choice: ");
-                        int outputChoice = sc.nextInt();
+                        int outputChoice = scanner.nextInt();
                         OutputType outputType = getOutputTypeFromChoice(outputChoice);
                         if (outputType != null){
                             reportGenerator.outputCourseReport(courseId,outputType);
@@ -418,9 +446,9 @@ public class MenuSystem {
                     }
                     case 4:
                         //change my username
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Enter your new username: ");
-                        String newUsername = sc.next();
+                        String newUsername = scanner.next();
                         
                         //call changeMyUsername method passing the new username
                         boolean usernameChanged = userService.changeMyUsername(user.getUserID(), newUsername);
@@ -433,9 +461,9 @@ public class MenuSystem {
                         
                     case 5:
                         //change my password
-                        sc.nextLine();
+                        scanner.nextLine();
                         System.out.println("Enter your new password");
-                        String newPassword = sc.next();
+                        String newPassword = scanner.next();
                         // Hash the password
                         String salt = Hasher.generateSalt();
                         String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000);
@@ -460,7 +488,13 @@ public class MenuSystem {
     }
     
     
-    // Method to return enum output type for the output of the reports
+    /**
+     * This method displays the admin menu with the admin possible actions
+     * 
+     * @param choice user choice from a menu as an integer
+     * 
+     * @return the OutputType(CSV_FILE, TEXT_FILE OR CONSOLE) based on the choice 
+     */
     private OutputType getOutputTypeFromChoice(int choice) {
     switch (choice) {
         case 1:
