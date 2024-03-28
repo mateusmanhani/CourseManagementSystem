@@ -20,13 +20,21 @@ public class UserService {
     public UserService(DatabaseIO databaseIO) {
         this.databaseIO = databaseIO;
     }
-
+    
+    /**
+     * This method allows changing updating a user in the database
+     * @param user the user object containing the information to be updated
+     * @param plainPassword optional parameter if password is to be changed
+     * @param salt salt string for the password
+     * 
+     * @return true if user was successfully updated and false if not
+     */
     public boolean addUSer(User user,String plainPassword, String salt) {
         // Hash the password before storing it in the database
         String hashedPassword = Hasher.hashPassword(plainPassword, salt, 1000);
          String lockQuery = "LOCK TABLES users WRITE";
         String unlockQuery = "UNLOCK TABLES";
-        String query = "INSERT INTO users (user_id, username, password, role, lecturer_id, salt) VALUES (?, ?, ?, ?, ?, ?)";
+        String addUserQuery = "INSERT INTO users (user_id, username, password, role, lecturer_id, salt) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = databaseIO.getConnection(); 
          Statement lockStmt = conn.createStatement()) {
@@ -34,7 +42,7 @@ public class UserService {
             // Lock the table before the insert operation
             lockStmt.execute(lockQuery);
 
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            try (PreparedStatement stmt = conn.prepareStatement(addUserQuery)) {
 
                 stmt.setString(1, user.getUserID());
                 stmt.setString(2, user.getUsername());
@@ -56,25 +64,29 @@ public class UserService {
                }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Or use a logger to log this exception
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("Error Code: " + e.getErrorCode());
             System.out.println("Message: " + e.getMessage());
             return false;
         }
     }
-
+/**
+     * This method allows deleting a user in the database
+     * @param userId the userId of the user to be deleted
+     *      
+     * @return true if user was successfully deleted and false if not
+     */
     public boolean deleteUser(String userId) {
         String lockQuery = "LOCK TABLES users WRITE";
         String unlockQuery = "UNLOCK TABLES";
-        String query = "DELETE FROM users WHERE user_id = ?";
+        String deleteUserQuery = "DELETE FROM users WHERE user_id = ?";
         
         try (Connection conn = databaseIO.getConnection();
          Statement lockStmt = conn.createStatement()) {
 
             // Lock the table
             lockStmt.execute(lockQuery);
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            try (PreparedStatement stmt = conn.prepareStatement(deleteUserQuery)) {
 
                 stmt.setString(1, userId);
                 int rowsAffected = stmt.executeUpdate();
@@ -92,7 +104,13 @@ public class UserService {
             return false;
         }
     }
-
+    /**
+     * This method allows changing updating a user in the database
+     * @param user the user object containing the information to be updated
+     * @param newPassword optional parameter if password is to be changed
+     * 
+     * @return true if user was successfully updated and false if not
+     */
     public boolean updateUser(User user, Optional<String> newPassword) {
         String lockQuery = "LOCK TABLES users WRITE";
         String unlockQuery = "UNLOCK TABLES";
@@ -159,7 +177,10 @@ public class UserService {
             }
         }
     }
-    
+    /**
+     * This method goes through the users table and hashes all passwords
+     * 
+     */
     public void updateAllUserPasswords() {
         String lockQuery = "LOCK TABLES users WRITE";
         String unlockQuery = "UNLOCK TABLES";
@@ -202,7 +223,7 @@ public class UserService {
                 }
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println("Error updating all user passwords: " + e.getMessage());
                 System.out.println("SQL Exception: " + e.getMessage());
             }finally{
                 // Ensure the table is unlocked even if there's an exception
@@ -213,14 +234,20 @@ public class UserService {
                 }
             }
         }catch (SQLException e) {
-        e.printStackTrace();
+        System.out.println("Error : " + e.getMessage());
     }
 }
-    
+    /**
+     * This method allows changing a user's username in the database
+     * @param userId the user id of the user to be updated
+     * @param newUsername the new password to be set
+     * 
+     * @return true if username was changed and false if not
+     */
     public boolean changeMyUsername(String userId, String newUsername) {
         String lockQuery = "LOCK TABLES users WRITE";
         String unlockQuery = "UNLOCK TABLES";
-        String query = "UPDATE users SET username = ? WHERE user_id = ?";
+        String updateUsernameQuery = "UPDATE users SET username = ? WHERE user_id = ?";
         
         try (Connection conn = databaseIO.getConnection();
          Statement lockStmt = conn.createStatement()) {
@@ -228,13 +255,13 @@ public class UserService {
             // Lock the table before any operations
             lockStmt.execute(lockQuery);
             
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            try (PreparedStatement stmt = conn.prepareStatement(updateUsernameQuery)) {
                 stmt.setString(1, newUsername);
                 stmt.setString(2, userId);
                 int rowsAffected = stmt.executeUpdate();
                 return rowsAffected > 0; //If any rows are affected return true
             }catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println("Error changing the username: " + e.getMessage());
                 return false;
             } finally{
                 // Ensure the table is unlocked even if there's an exception
@@ -245,11 +272,17 @@ public class UserService {
                 }
             }
         }catch (SQLException e) {
-        e.printStackTrace();
+            System.out.println("Error : " + e.getMessage());
         return false;
     }
     }
-    
+    /**
+     * This method allows changing a user's password in the database
+     * @param userId the user id of the user to be updated
+     * @param newPassword the new password to be set
+     * @param salt the salt string for the new password
+     * @return true if password was changed and false if not
+     */
     public boolean changeMyPassword(String userId, String newPassword, String salt) {
         // Hash the new password before updating the database
         String hashedPassword = Hasher.hashPassword(newPassword, salt, 1000); // Example: Using IterativeHasher to hash the password
@@ -257,7 +290,7 @@ public class UserService {
         String lockQuery = "LOCK TABLES users WRITE";
         String unlockQuery = "UNLOCK TABLES";
     
-        String query = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
+        String updatePasswordQuery = "UPDATE users SET password = ?, salt = ? WHERE user_id = ?";
         
         try (Connection conn = databaseIO.getConnection(); 
          Statement lockStmt = conn.createStatement()) {
@@ -265,14 +298,14 @@ public class UserService {
             // Lock the table before any operations
             lockStmt.execute(lockQuery);
         
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            try (PreparedStatement stmt = conn.prepareStatement(updatePasswordQuery)) {
                 stmt.setString(1, hashedPassword);
                 stmt.setString(2, salt);
                 stmt.setString(3, userId);
                 int rowsAffected = stmt.executeUpdate();
                 return rowsAffected > 0; //If any rows are affected return true
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println("Error changing the password: " + e.getMessage());
                 return false;
             }finally{
                 // Ensure the table is unlocked even if there's an exception
@@ -283,7 +316,7 @@ public class UserService {
                 }
             }
         }catch (SQLException e) {
-        e.printStackTrace();
+            System.out.println("Error : " + e.getMessage());
         return false;
     }
 }
@@ -291,24 +324,26 @@ public class UserService {
      * This method allows changing a user's role in the database
      * @param userId the user id of the user to be updated
      * @param newRole the role to be updated
+     * 
+     * @return true if role was successfully changed and false if not
      */
     public boolean changeMyRole(String userId, Role newRole) {
         String lockQuery = "LOCK TABLES users WRITE";
         String unlockQuery = "UNLOCK TABLES";
-        String query = "UPDATE users SET role = ? WHERE user_id = ?";
+        String updateRoleQuery = "UPDATE users SET role = ? WHERE user_id = ?";
         
         try (Connection conn = databaseIO.getConnection(); 
          Statement lockStmt = conn.createStatement()) {
 
             // Lock the table before any operations
             lockStmt.execute(lockQuery);
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            try (PreparedStatement stmt = conn.prepareStatement(updateRoleQuery)) {
                 stmt.setString(1, newRole.name());
                 stmt.setString(2, userId);
                 int rowsAffected = stmt.executeUpdate();
                 return rowsAffected > 0; //If any rows are affected return true
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println("Error changing the role: " + e.getMessage());
                 return false;
             }finally{
                 // Ensure the table is unlocked even if there's an exception
@@ -319,7 +354,7 @@ public class UserService {
                 }
             }
         }catch (SQLException e) {
-        e.printStackTrace();
+            System.out.println("Error: " + e.getMessage());
         return false;
     }
     }
@@ -333,15 +368,17 @@ public class UserService {
     }
     
     /**
-     * This method fetches a user in the interface by their user id.
-     * @param userID the user id 
+     * This method fetches a user in the database by their user id.
+     * @param userID the user id of the desired user
+     * 
+     * @return user object
      */
     public User fetchUserById(String userID){
-        String query = "SELECT username, password, role, lecturer_id, salt FROM users WHERE user_id = ?";
+        String fetchUserQuery = "SELECT username, password, role, lecturer_id, salt FROM users WHERE user_id = ?";
         User user = null;
         
         try (Connection conn = databaseIO.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+             PreparedStatement stmt = conn.prepareStatement(fetchUserQuery)) {
             
             stmt.setString(1, userID);
             ResultSet rs = stmt.executeQuery();
