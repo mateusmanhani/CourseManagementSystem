@@ -22,7 +22,12 @@ public class ReportGenerator {
         this.reportOutputter = new ReportOutputter(); // initialise reportOutputter
     }
 
-    //Generate Course Report
+    /**
+     * This method generates a course report based on an course id
+     * @param courseId the course id for the report
+     * 
+     * @return a formatted String containing the course report report
+     */
     public String generateCourseReport(String courseId) {
         StringBuilder report = new StringBuilder();
         String courseQuery = "SELECT course_name FROM courses WHERE course_id = ?;";
@@ -92,7 +97,12 @@ public class ReportGenerator {
         }
     }
 
-    // Generate Student Report
+    /**
+     * This method generates a student report based on an User id
+     * @param studentId the student id for the report
+     * 
+     * @return a formatted String containing the student report
+     */
     public String generateStudentReport(String studentId) {
         StringBuilder report = new StringBuilder();
         Connection conn = null;
@@ -200,7 +210,13 @@ public class ReportGenerator {
         }
     }
 
-    // Generate Lecturer Report
+    /**
+     * This method generates a lecturer report based on an User object and a possible third party lecturer id
+     * @param user the user object containing the information to be updated
+     * @param requestedLecturerId 
+     * 
+     * @return a formatted String containing the lecturer report
+     */
     public String generateLecturerReport(User user, String requestedLecturerId) {
         StringBuilder report = new StringBuilder();
 
