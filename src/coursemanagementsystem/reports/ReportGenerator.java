@@ -26,7 +26,7 @@ public class ReportGenerator {
      * This method generates a course report based on an course id
      * @param courseId the course id for the report
      * 
-     * @return a formatted String containing the course report report
+     * @return a formatted String containing the course report
      */
     public String generateCourseReport(String courseId) {
         StringBuilder report = new StringBuilder();
