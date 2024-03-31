@@ -5,7 +5,6 @@ import coursemanagementsystem.databaseImplementation.DatabaseIO;
 import coursemanagementsystem.userManagement.UserService;
 import coursemanagementsystem.userManagement.AuthService;
 import coursemanagementsystem.reports.ReportGenerator;
-import coursemanagementsystem.userManagement.Hasher;
 
 /**
  *
@@ -13,9 +12,10 @@ import coursemanagementsystem.userManagement.Hasher;
  */
 public class CourseManagementSystem {
 
-    /**
+    /*
      * GITHUB: https://github.com/mateusmanhani/CourseManagementSystem
      */
+    
     public static void main(String[] args) {
         // Initialize DatabaseIO with your actual database connection details
         DatabaseIO databaseIO = new MySQLDatabaseIO();
